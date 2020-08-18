@@ -8,8 +8,8 @@ Description: A single key function, 'Require' that wraps 'install.packages',
     same result whether it is the first or subsequent times running the function.
 URL: http://Require.predictiveecology.org,
         https://github.com/PredictiveEcology/Require
-Date: 2020-08-04
-Version: 0.0.6
+Date: 2020-08-11
+Version: 0.0.7
 Authors@R: c(
     person("Eliot J B", "McIntire", email = "eliot.mcintire@canada.ca",
     role = c("aut", "cre"), comment = c(ORCID = "0000-0002-6914-8316")),
@@ -26,10 +26,10 @@ BugReports: https://github.com/PredictiveEcology/Require/issues
 ByteCompile: yes
 RoxygenNote: 7.1.1
 NeedsCompilation: no
-Packaged: 2020-08-05 14:51:46 UTC; achubaty
+Packaged: 2020-08-13 04:49:16 UTC; emcintir
 Author: Eliot J B McIntire [aut, cre] (<https://orcid.org/0000-0002-6914-8316>),
   Her Majesty the Queen in Right of Canada, as represented by the
     Minister of Natural Resources Canada [cph]
 Maintainer: Eliot J B McIntire <eliot.mcintire@canada.ca>
 Repository: CRAN
-Date/Publication: 2020-08-11 07:20:03 UTC
+Date/Publication: 2020-08-18 08:10:03 UTC

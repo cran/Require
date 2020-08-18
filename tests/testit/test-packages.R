@@ -1,40 +1,39 @@
 if (Sys.info()["user"] != "emcintir")
   testit::assert(identical(isInteractive(), interactive()))
-Require:::chooseCRANmirror2(ind = 1)
+#isInteractiveOrig <- Require:::isInteractive
+#isInteractive <- function() TRUE
+#assignInNamespace("isInteractive", isInteractive, ns = "Require")
 
-# Mock the internal functions
-chooseCRANmirror2 <- function() {
-  repos <- NULL
-  repos2 <- "https://cloud.r-project.org"
-  repos["CRAN"] <- repos2
-  options("repos" = repos)
-  repos
-}
-assignInNamespace("chooseCRANmirror2", chooseCRANmirror2, ns = "Require")
+repos <- getCRANrepos()
+opt <- options(repos = repos)
 
-isInteractiveOrig <- isInteractive
-isInteractive <- function() TRUE
-assignInNamespace("isInteractive", isInteractive, ns = "Require")
+# # Mock the internal functions
+# chooseCRANmirror2 <- function() {
+#   repos <- NULL
+#   repos2 <- chooseCRANmirror(ind = 1)
+#   repos["CRAN"] <- repos2
+#   options("repos" = repos)
+#   repos
+# }
+# assignInNamespace("chooseCRANmirror2", chooseCRANmirror2, ns = "Require")
+
 
 ### cover CRAN in case of having a environment variable set, which TRAVIS seems to
 origCRAN_REPO <- Sys.getenv("CRAN_REPO")
 Sys.setenv("CRAN_REPO" = "")
-out <- getCRANrepos("")
 isInteractive <- function() FALSE
 assignInNamespace("isInteractive", isInteractive, ns = "Require")
 out <- getCRANrepos("")
 Sys.setenv("CRAN_REPO" = origCRAN_REPO)
 
-assignInNamespace("isInteractive", isInteractiveOrig, ns = "Require")
-repos <- Require:::getCRANrepos("")
+repos <- getCRANrepos("")
 testit::assert(is.character(repos))
 testit::assert(nchar(repos) > 0)
 
-repos <- NULL
-repos2 <- "https://cloud.r-project.org"
-repos["CRAN"] <- repos2
+#repos <- NULL
+#chooseCRANmirror(ind = 1)
+#repos <- getOption("repos")
 
-options("repos" = repos) # shouldn't be necessary now
 options("Require.purge" = FALSE)
 
 # Failure on Travis:
@@ -59,7 +58,7 @@ detach("package:TimeWarp", unload = TRUE)
 remove.packages("TimeWarp", lib = dir1)
 
 # Try older version
-if (identical(tolower(Sys.getenv("CI")), "true") ||  # travis & appveyor
+if (identical(tolower(Sys.getenv("CI")), "true") ||  # travis
     interactive() || # interactive
     identical(Sys.getenv("NOT_CRAN"), "true")) { # CTRL-SHIFT-E
   dir2 <- tempdir2("test2")
@@ -153,9 +152,14 @@ warn <- tryCatch(out <- Require("Require (>=0.0.1)", dependencies = FALSE,
 warn <- tryCatch(out <- Require("Require (>=0.0.1)", dependencies = FALSE,
                                 install = "force"),
                  warning = function(x) x)
-warn <- tryCatch(out <- Require("A3 (<=0.0.1)", dependencies = FALSE,
-                                install = "force"),
-                 warning = function(x) x)
-warn <- tryCatch(out <- Require("A3 (<=0.0.1)", dependencies = FALSE,
-                                install = "force"),
-                 warning = function(x) x)
+if (interactive()) {
+  warn <- tryCatch(out <- Require("A3 (<=0.0.1)", dependencies = FALSE,
+                                  install = "force"),
+                   warning = function(x) x)
+  warn <- tryCatch(out <- Require("A3 (<=0.0.1)", dependencies = FALSE,
+                                  install = "force"),
+                   warning = function(x) x)
+}
+
+
+options(opt)
