@@ -1,14 +1,13 @@
 # Require
 
 <!-- badges start -->
-[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/Require)](https://cran.r-project.org/package=Require)
-[![CRAN Downloads](http://cranlogs.r-pkg.org/badges/grand-total/Require)](https://cran.r-project.org/package=Require)
+[![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/Require)](https://cran.r-project.org/package=Require)
+[![CRAN Downloads](https://cranlogs.r-pkg.org/badges/grand-total/Require)](https://cran.r-project.org/package=Require)
 [![R build status](https://github.com/PredictiveEcology/Require/workflows/R-CMD-check/badge.svg)](https://github.com/PredictiveEcology/Require/actions)
 <!-- badges: end -->
 
 A simple package for reproducible package management in R.
-Built on top of `git2r` and `archivist`, this package aims at making high-level, robust, machine and OS independent tools for making deeply reproducible package management in R.
-This extends beyond the package management utilities of `packrat` and `checkpoint` by including all in one management for packages in R focused around a single function, `Require`.
+This is different than other approaches to package management such as `packrat`, `checkpoint`, and `renv`, by including all-in-one management for packages in R focused around a single function, `Require`.
 
 # Objectives
 
@@ -107,6 +106,10 @@ Move to a new machine, say
 Require::Require(packageVersionFile = "mySnapshot.txt")
 ```
 
+### Using local package cache
+
+When installing on many machines on a network, having a local cache can speed up installations. Setting `options("Require.RPackageCache" = someSharedDirectory)` will turn on local cache. By default, binaries will be saved on Windows. Also by default, binaries will be *built* on the fly on *nix systems and this binary will be cached for even faster installs later (turned off with `options("Require.RPackageCache" = someSharedDirectory)`)
+
 # Installing
 
 ## News
@@ -118,7 +121,7 @@ See updates from latest [CRAN](https://cran.r-project.org/package=Require) and [
 ### Current release
 
 [![R build status](https://github.com/PredictiveEcology/Require/workflows/R-CMD-check/badge.svg?branch=master)](https://github.com/PredictiveEcology/Require/actions)
-[![Coverage Status](https://coveralls.io/repos/github/PredictiveEcology/Require/badge.svg?branch=master)](https://coveralls.io/github/PredictiveEcology/Require?branch=master)
+[![codecov](https://codecov.io/gh/PredictiveEcology/Require/branch/master/graph/badge.svg)](https://codecov.io/gh/PredictiveEcology/Require)
 
 **Install from CRAN:**
 
@@ -137,7 +140,7 @@ install_github("PredictiveEcology/Require", dependencies = TRUE)
 ### Development version
 
 [![R build status](https://github.com/PredictiveEcology/Require/workflows/R-CMD-check/badge.svg?branch=development)](https://github.com/PredictiveEcology/Require/actions)
-[![Coverage Status](https://coveralls.io/repos/github/PredictiveEcology/Require/badge.svg?branch=development)](https://coveralls.io/github/PredictiveEcology/Require?branch=development)
+[![codecov](https://codecov.io/gh/PredictiveEcology/Require/branch/development/graph/badge.svg)](https://codecov.io/gh/PredictiveEcology/Require)
 
 **Install from GitHub:**
 

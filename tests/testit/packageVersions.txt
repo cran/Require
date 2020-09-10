@@ -1,313 +1,334 @@
-"instPkgs" "instVers"
-"abind" "1.4-5"
-"amc" "0.1.6.9000"
-"animation" "2.6"
-"askpass" "1.1"
-"assertthat" "0.2.1"
-"automap" "1.0-14"
-"backports" "1.1.8"
-"base64enc" "0.1-3"
-"BH" "1.72.0-3"
-"BiocManager" "1.30.10"
-"bit" "1.1-15.2"
-"bit64" "0.9-7"
-"bitops" "1.0-6"
-"blob" "1.2.1"
-"bomrang" "0.7.0"
-"brew" "1.0-6"
-"broom" "0.7.0"
-"callr" "3.4.3"
-"cellranger" "1.1.0"
-"checkmate" "2.0.0"
-"CircStats" "0.2-6"
-"classInt" "0.4-3"
-"cli" "2.0.2"
-"clipr" "0.7.0"
-"clisymbols" "1.2.0"
-"colorspace" "1.4-1"
-"colourvalues" "0.3.5"
-"commonmark" "1.7"
-"covr" "3.5.0"
-"crayon" "1.3.4"
-"crosstalk" "1.1.0.1"
-"crul" "0.9.0"
-"curl" "4.3"
-"data.table" "1.13.0"
-"DBI" "1.1.0"
-"dbplyr" "1.4.4"
-"DEoptim" "2.2-5"
-"desc" "1.2.0"
-"devtools" "2.3.0"
-"DiagrammeR" "1.0.6.1"
-"dichromat" "2.0-0"
-"digest" "0.6.25"
-"dismo" "1.1-4"
-"downloader" "0.4"
-"dplyr" "1.0.0"
-"DT" "0.14"
-"e1071" "1.7-3"
-"effsize" "0.8.0"
-"ellipsis" "0.3.1"
-"EnvStats" "2.3.1"
-"evaluate" "0.14"
-"fansi" "0.4.1"
-"farver" "2.0.3"
-"fastdigest" "0.6-3"
-"fasterize" "1.0.2"
-"fastmap" "1.0.1"
-"fastmatch" "1.1-0"
-"fastshp" "0.1-2"
-"FNN" "1.1.3"
-"forcats" "0.5.0"
-"foreach" "1.5.0"
-"fpCompare" "0.2.3"
-"fs" "1.4.1"
-"future" "1.17.0"
-"future.apply" "1.5.0"
-"gargle" "0.5.0"
-"gdalUtils" "2.0.3.2"
-"gdtools" "0.2.2"
-"generics" "0.0.2"
-"geojson" "0.3.4"
-"geojsonio" "0.9.2"
-"geojsonlint" "0.4.0"
-"geojsonsf" "2.0.0"
-"ggimage" "0.2.8"
-"ggplot2" "3.3.2"
-"ggplotify" "0.0.5"
-"gh" "1.1.0"
-"git2r" "0.27.1"
-"globals" "0.12.5"
-"glue" "1.4.1"
-"googledrive" "1.0.1"
-"googlePolylines" "0.7.2"
-"gridBase" "0.4-7"
-"gridExtra" "2.3"
-"gridGraphics" "0.5-0"
-"gstat" "2.0-6"
-"gtable" "0.3.0"
-"haven" "2.3.1"
-"hexbin" "1.28.1"
-"hexSticker" "0.4.7"
-"highlight" "0.5.0"
-"highr" "0.8"
-"hms" "0.5.3"
-"hoardr" "0.5.2"
-"htmltools" "0.5.0"
-"htmlwidgets" "1.5.1"
-"httpcode" "0.3.0"
-"httpuv" "1.5.4"
-"httr" "1.4.1"
-"igraph" "1.2.5"
-"influenceR" "0.1.0"
-"ini" "0.3.1"
-"intervals" "0.15.2"
-"isoband" "0.2.2"
-"iterators" "1.0.12"
-"janitor" "2.0.1"
-"jpeg" "0.1-8.1"
-"jqr" "1.1.0"
-"jsonify" "1.2.1"
-"jsonlite" "1.7.0"
-"jsonvalidate" "1.1.0"
-"knitr" "1.29"
-"kSamples" "1.2-9"
-"labeling" "0.3"
-"LandR" "0.0.6"
-"later" "1.1.0.1"
-"latticeExtra" "0.6-29"
-"lazyeval" "0.2.2"
-"leafem" "0.1.1"
-"leafgl" "0.1.1"
-"leaflet" "2.0.3"
-"leaflet.providers" "1.9.0"
-"leafpop" "0.0.5"
-"leafsync" "0.1.0"
-"lifecycle" "0.2.0"
-"listenv" "0.8.0"
-"lme4" "1.1-23"
-"logging" "0.10-108"
-"lubridate" "1.7.9"
-"lwgeom" "0.2-5"
-"magick" "2.4.0"
-"magrittr" "1.5"
-"map" "0.0.1.9001"
-"mapdeck" "0.3.3"
-"maptools" "1.0-1"
-"mapview" "2.7.8"
-"markdown" "1.1"
-"memoise" "1.1.0"
-"microbenchmark" "1.4-7"
-"mime" "0.9"
-"miniUI" "0.1.1.1"
-"minqa" "1.2.4"
-"modelr" "0.1.8"
-"MuMIn" "1.43.17"
-"munsell" "0.5.0"
-"nloptr" "1.2.2.2"
-"nortest" "1.0-4"
-"openssl" "1.4.1"
-"parsedate" "1.2.0"
-"pemisc" "0.0.2.9001"
-"pillar" "1.4.4"
-"pkgbuild" "1.0.8"
-"pkgconfig" "2.0.3"
-"pkgdown" "1.5.1"
-"pkgload" "1.1.0"
-"plainview" "0.1.0"
-"plogr" "0.2.0"
-"plyr" "1.8.6"
-"png" "0.1-7"
-"praise" "1.0.0"
-"prettyunits" "1.1.1"
-"processx" "3.4.2"
-"profvis" "0.3.6"
-"progress" "1.2.2"
-"promises" "1.1.1"
-"protolite" "2.1"
-"pryr" "0.1.4"
-"ps" "1.3.3"
-"purrr" "0.3.4"
-"qs" "0.22.1"
-"quickPlot" "0.1.6.9001"
-"R.methodsS3" "1.8.0"
-"R.oo" "1.23.0"
-"R.utils" "2.9.2"
-"R6" "2.4.1"
-"RandomFields" "3.3.8"
-"RandomFieldsUtils" "0.5.3"
-"rapidjsonr" "1.2.0"
-"RApiSerialize" "0.1.0"
-"rappdirs" "0.3.1"
-"raster" "3.3-7"
-"rasterVis" "0.48"
-"rcmdcheck" "1.3.3"
-"RColorBrewer" "1.1-2"
-"Rcpp" "1.0.4.6"
-"RcppArmadillo" "0.9.900.1.0"
-"RcppEigen" "0.3.3.7.0"
-"RCurl" "1.98-1.2"
-"readr" "1.3.1"
-"readxl" "1.3.1"
-"rematch" "1.0.1"
-"rematch2" "2.1.2"
-"remotes" "2.2.0"
-"reprex" "0.3.0"
-"reproducible" "1.2.1.9001"
-"Require" "0.0.7"
-"reshape" "0.8.8"
-"reshape2" "1.4.4"
-"rex" "1.2.0"
-"rgdal" "1.5-10"
-"rgeos" "0.5-3"
-"rhub" "1.1.1"
-"rlang" "0.4.6"
-"rmapshaper" "0.4.4"
-"rmarkdown" "2.3"
-"roxygen2" "7.1.1"
-"rprojroot" "1.3-2"
-"RSAGA" "1.3.0"
-"RSQLite" "2.2.0"
-"rstudioapi" "0.11"
-"rvcheck" "0.1.8"
-"rversions" "2.0.2"
-"rvest" "0.3.5"
-"satellite" "1.0.2"
-"scales" "1.1.1"
-"selectr" "0.4-2"
-"sessioninfo" "1.1.1"
-"sf" "0.9-4"
-"sfheaders" "0.2.2"
-"shapefiles" "0.7"
-"shiny" "1.5.0"
-"showtext" "0.8-1"
-"showtextdb" "3.0"
-"snakecase" "0.11.0"
-"sourcetools" "0.1.7"
-"sp" "1.4-2"
-"spacetime" "1.2-3"
-"SpaDES" "2.0.5"
-"SpaDES.addins" "0.1.2"
-"SpaDES.core" "1.0.1.9002"
-"SpaDES.experiment" "0.0.2.9000"
-"SpaDES.tools" "0.3.6"
-"spatialwidget" "0.2.2"
-"stars" "0.4-1"
-"statmod" "1.4.34"
-"stringfish" "0.12.1"
-"stringi" "1.4.6"
-"stringr" "1.4.0"
-"SuppDists" "1.1-9.5"
-"svglite" "1.2.3"
-"sys" "3.3"
-"sysfonts" "0.8.1"
-"systemfonts" "0.2.3"
-"taskscheduleR" "1.4"
-"testit" "0.11"
-"testthat" "2.3.2"
-"tibble" "3.0.1"
-"tidyr" "1.1.0"
-"tidyselect" "1.1.0"
-"tidyverse" "1.3.0"
-"tiler" "0.2.4"
-"TimeWarp" "1.0.15"
-"tinytex" "0.24"
-"tmap" "3.0"
-"tmaptools" "3.0"
-"triebeard" "0.3.0"
-"trust" "0.1-8"
-"units" "0.6-7"
-"urltools" "1.7.3"
-"usefulFuns" "0.1.0"
-"usethis" "1.6.1"
-"utf8" "1.1.4"
-"uuid" "0.1-4"
-"V8" "3.2.0"
-"vctrs" "0.3.1"
-"versions" "0.3"
-"viridis" "0.5.1"
-"viridisLite" "0.3.0"
-"visNetwork" "2.0.9"
-"visualTest" "1.0.0"
-"webshot" "0.5.2"
-"whisker" "0.4"
-"whoami" "1.3.0"
-"withr" "2.2.0"
-"xfun" "0.15"
-"XML" "3.99-0.3"
-"xml2" "1.3.2"
-"xopen" "1.0.0"
-"xtable" "1.8-4"
-"xts" "0.12-0"
-"yaml" "2.2.1"
-"zoo" "1.8-8"
-"base" "4.0.2"
-"boot" "1.3-25"
-"class" "7.3-17"
-"cluster" "2.1.0"
-"codetools" "0.2-16"
-"compiler" "4.0.2"
-"datasets" "4.0.2"
-"foreign" "0.8-80"
-"graphics" "4.0.2"
-"grDevices" "4.0.2"
-"grid" "4.0.2"
-"KernSmooth" "2.23-17"
-"lattice" "0.20-41"
-"MASS" "7.3-51.6"
-"Matrix" "1.2-18"
-"methods" "4.0.2"
-"mgcv" "1.8-31"
-"nlme" "3.1-148"
-"nnet" "7.3-14"
-"parallel" "4.0.2"
-"rpart" "4.1-15"
-"spatial" "7.3-12"
-"splines" "4.0.2"
-"stats" "4.0.2"
-"stats4" "4.0.2"
-"survival" "3.1-12"
-"tcltk" "4.0.2"
-"tools" "4.0.2"
-"translations" "4.0.2"
-"utils" "4.0.2"
+"Package","LibPath","Version","GithubRepo","GithubUsername","GithubRef","GithubSHA1"
+"A3","C:/Eliot/R/win-library/4.0","1.0.0",NA,NA,NA,NA
+"abind","C:/Eliot/R/win-library/4.0","1.4-5",NA,NA,NA,NA
+"amc","C:/Eliot/R/win-library/4.0","0.1.6.9000","amc","achubaty","development","293ae49de0fb4f8a138054499134999248e2305f"
+"animation","C:/Eliot/R/win-library/4.0","2.6",NA,NA,NA,NA
+"askpass","C:/Eliot/R/win-library/4.0","1.1",NA,NA,NA,NA
+"assertthat","C:/Eliot/R/win-library/4.0","0.2.1",NA,NA,NA,NA
+"automap","C:/Eliot/R/win-library/4.0","1.0-14",NA,NA,NA,NA
+"backports","C:/Eliot/R/win-library/4.0","1.1.8",NA,NA,NA,NA
+"base64enc","C:/Eliot/R/win-library/4.0","0.1-3",NA,NA,NA,NA
+"BH","C:/Eliot/R/win-library/4.0","1.72.0-3",NA,NA,NA,NA
+"BiocManager","C:/Eliot/R/win-library/4.0","1.30.10",NA,NA,NA,NA
+"bit","C:/Eliot/R/win-library/4.0","4.0.4",NA,NA,NA,NA
+"bit64","C:/Eliot/R/win-library/4.0","0.9-7",NA,NA,NA,NA
+"bitops","C:/Eliot/R/win-library/4.0","1.0-6",NA,NA,NA,NA
+"blob","C:/Eliot/R/win-library/4.0","1.2.1",NA,NA,NA,NA
+"bomrang","C:/Eliot/R/win-library/4.0","0.7.0",NA,NA,NA,NA
+"brew","C:/Eliot/R/win-library/4.0","1.0-6",NA,NA,NA,NA
+"broom","C:/Eliot/R/win-library/4.0","0.7.0",NA,NA,NA,NA
+"callr","C:/Eliot/R/win-library/4.0","3.4.3",NA,NA,NA,NA
+"cellranger","C:/Eliot/R/win-library/4.0","1.1.0",NA,NA,NA,NA
+"checkmate","C:/Eliot/R/win-library/4.0","2.0.0",NA,NA,NA,NA
+"checkpoint","C:/Eliot/R/win-library/4.0","0.4.8",NA,NA,NA,NA
+"CircStats","C:/Eliot/R/win-library/4.0","0.2-6",NA,NA,NA,NA
+"classInt","C:/Eliot/R/win-library/4.0","0.4-3",NA,NA,NA,NA
+"cli","C:/Eliot/R/win-library/4.0","2.0.2",NA,NA,NA,NA
+"clipr","C:/Eliot/R/win-library/4.0","0.7.0",NA,NA,NA,NA
+"clisymbols","C:/Eliot/R/win-library/4.0","1.2.0",NA,NA,NA,NA
+"colorspace","C:/Eliot/R/win-library/4.0","1.4-1",NA,NA,NA,NA
+"colourvalues","C:/Eliot/R/win-library/4.0","0.3.5",NA,NA,NA,NA
+"commonmark","C:/Eliot/R/win-library/4.0","1.7",NA,NA,NA,NA
+"covr","C:/Eliot/R/win-library/4.0","3.5.0",NA,NA,NA,NA
+"crayon","C:/Eliot/R/win-library/4.0","1.3.4",NA,NA,NA,NA
+"crosstalk","C:/Eliot/R/win-library/4.0","1.1.0.1",NA,NA,NA,NA
+"crul","C:/Eliot/R/win-library/4.0","0.9.0",NA,NA,NA,NA
+"curl","C:/Eliot/R/win-library/4.0","4.3",NA,NA,NA,NA
+"cyclocomp","C:/Eliot/R/win-library/4.0","1.1.0",NA,NA,NA,NA
+"data.table","C:/Eliot/R/win-library/4.0","1.13.0",NA,NA,NA,NA
+"DBI","C:/Eliot/R/win-library/4.0","1.1.0",NA,NA,NA,NA
+"dbplyr","C:/Eliot/R/win-library/4.0","1.4.4",NA,NA,NA,NA
+"DEoptim","C:/Eliot/R/win-library/4.0","2.2-5",NA,NA,NA,NA
+"desc","C:/Eliot/R/win-library/4.0","1.2.0",NA,NA,NA,NA
+"devtools","C:/Eliot/R/win-library/4.0","2.3.0",NA,NA,NA,NA
+"DiagrammeR","C:/Eliot/R/win-library/4.0","1.0.6.1",NA,NA,NA,NA
+"dichromat","C:/Eliot/R/win-library/4.0","2.0-0",NA,NA,NA,NA
+"digest","C:/Eliot/R/win-library/4.0","0.6.25",NA,NA,NA,NA
+"dismo","C:/Eliot/R/win-library/4.0","1.1-4",NA,NA,NA,NA
+"doParallel","C:/Eliot/R/win-library/4.0","1.0.15",NA,NA,NA,NA
+"downloader","C:/Eliot/R/win-library/4.0","0.4",NA,NA,NA,NA
+"dplyr","C:/Eliot/R/win-library/4.0","1.0.0",NA,NA,NA,NA
+"DT","C:/Eliot/R/win-library/4.0","0.14",NA,NA,NA,NA
+"e1071","C:/Eliot/R/win-library/4.0","1.7-3",NA,NA,NA,NA
+"effsize","C:/Eliot/R/win-library/4.0","0.8.0",NA,NA,NA,NA
+"ellipsis","C:/Eliot/R/win-library/4.0","0.3.1",NA,NA,NA,NA
+"EnvStats","C:/Eliot/R/win-library/4.0","2.3.1",NA,NA,NA,NA
+"evaluate","C:/Eliot/R/win-library/4.0","0.14",NA,NA,NA,NA
+"fansi","C:/Eliot/R/win-library/4.0","0.4.1",NA,NA,NA,NA
+"farver","C:/Eliot/R/win-library/4.0","2.0.3",NA,NA,NA,NA
+"fastdigest","C:/Eliot/R/win-library/4.0","0.6-3",NA,NA,NA,NA
+"fasterize","C:/Eliot/R/win-library/4.0","1.0.2",NA,NA,NA,NA
+"fastmap","C:/Eliot/R/win-library/4.0","1.0.1",NA,NA,NA,NA
+"fastmatch","C:/Eliot/R/win-library/4.0","1.1-0",NA,NA,NA,NA
+"fastshp","C:/Eliot/R/win-library/4.0","0.1-2","fastshp","s-u","master","3e0eb833f6292013423d93c71f7c26f6dc2d70f1"
+"FNN","C:/Eliot/R/win-library/4.0","1.1.3",NA,NA,NA,NA
+"forcats","C:/Eliot/R/win-library/4.0","0.5.0",NA,NA,NA,NA
+"foreach","C:/Eliot/R/win-library/4.0","1.5.0",NA,NA,NA,NA
+"formattable","C:/Eliot/R/win-library/4.0","0.2.0.1",NA,NA,NA,NA
+"fpCompare","C:/Eliot/R/win-library/4.0","0.2.3",NA,NA,NA,NA
+"fs","C:/Eliot/R/win-library/4.0","1.4.1",NA,NA,NA,NA
+"future","C:/Eliot/R/win-library/4.0","1.17.0",NA,NA,NA,NA
+"future.apply","C:/Eliot/R/win-library/4.0","1.6.0",NA,NA,NA,NA
+"gamlss","C:/Eliot/R/win-library/4.0","5.1-7",NA,NA,NA,NA
+"gamlss.data","C:/Eliot/R/win-library/4.0","5.1-4",NA,NA,NA,NA
+"gamlss.dist","C:/Eliot/R/win-library/4.0","5.1-7",NA,NA,NA,NA
+"gargle","C:/Eliot/R/win-library/4.0","0.5.0",NA,NA,NA,NA
+"gdalUtils","C:/Eliot/R/win-library/4.0","2.0.3.2",NA,NA,NA,NA
+"gdtools","C:/Eliot/R/win-library/4.0","0.2.2",NA,NA,NA,NA
+"generics","C:/Eliot/R/win-library/4.0","0.0.2",NA,NA,NA,NA
+"geojson","C:/Eliot/R/win-library/4.0","0.3.4",NA,NA,NA,NA
+"geojsonio","C:/Eliot/R/win-library/4.0","0.9.2",NA,NA,NA,NA
+"geojsonlint","C:/Eliot/R/win-library/4.0","0.4.0",NA,NA,NA,NA
+"geojsonsf","C:/Eliot/R/win-library/4.0","2.0.0",NA,NA,NA,NA
+"ggbiplot","C:/Eliot/R/win-library/4.0","0.55","ggbiplot","vqv","HEAD","7325e880485bea4c07465a0304c470608fffb5d9"
+"ggimage","C:/Eliot/R/win-library/4.0","0.2.8",NA,NA,NA,NA
+"ggplot2","C:/Eliot/R/win-library/4.0","3.3.2",NA,NA,NA,NA
+"ggplotify","C:/Eliot/R/win-library/4.0","0.0.5",NA,NA,NA,NA
+"gh","C:/Eliot/R/win-library/4.0","1.1.0",NA,NA,NA,NA
+"git2r","C:/Eliot/R/win-library/4.0","0.27.1",NA,NA,NA,NA
+"glmm","C:/Eliot/R/win-library/4.0","1.4.2",NA,NA,NA,NA
+"globals","C:/Eliot/R/win-library/4.0","0.12.5",NA,NA,NA,NA
+"glue","C:/Eliot/R/win-library/4.0","1.4.1",NA,NA,NA,NA
+"googledrive","C:/Eliot/R/win-library/4.0","1.0.1",NA,NA,NA,NA
+"googlePolylines","C:/Eliot/R/win-library/4.0","0.7.2",NA,NA,NA,NA
+"googlesheets4","C:/Eliot/R/win-library/4.0","0.2.0",NA,NA,NA,NA
+"gridBase","C:/Eliot/R/win-library/4.0","0.4-7",NA,NA,NA,NA
+"gridExtra","C:/Eliot/R/win-library/4.0","2.3",NA,NA,NA,NA
+"gridGraphics","C:/Eliot/R/win-library/4.0","0.5-0",NA,NA,NA,NA
+"gstat","C:/Eliot/R/win-library/4.0","2.0-6",NA,NA,NA,NA
+"gtable","C:/Eliot/R/win-library/4.0","0.3.0",NA,NA,NA,NA
+"haven","C:/Eliot/R/win-library/4.0","2.3.1",NA,NA,NA,NA
+"hexbin","C:/Eliot/R/win-library/4.0","1.28.1",NA,NA,NA,NA
+"hexSticker","C:/Eliot/R/win-library/4.0","0.4.7",NA,NA,NA,NA
+"highlight","C:/Eliot/R/win-library/4.0","0.5.0",NA,NA,NA,NA
+"highr","C:/Eliot/R/win-library/4.0","0.8",NA,NA,NA,NA
+"hms","C:/Eliot/R/win-library/4.0","0.5.3",NA,NA,NA,NA
+"hoardr","C:/Eliot/R/win-library/4.0","0.5.2",NA,NA,NA,NA
+"htmltools","C:/Eliot/R/win-library/4.0","0.5.0",NA,NA,NA,NA
+"htmlwidgets","C:/Eliot/R/win-library/4.0","1.5.1",NA,NA,NA,NA
+"httpcode","C:/Eliot/R/win-library/4.0","0.3.0",NA,NA,NA,NA
+"httpuv","C:/Eliot/R/win-library/4.0","1.5.4",NA,NA,NA,NA
+"httr","C:/Eliot/R/win-library/4.0","1.4.1",NA,NA,NA,NA
+"ids","C:/Eliot/R/win-library/4.0","1.0.1",NA,NA,NA,NA
+"igraph","C:/Eliot/R/win-library/4.0","1.2.5",NA,NA,NA,NA
+"influenceR","C:/Eliot/R/win-library/4.0","0.1.0",NA,NA,NA,NA
+"ini","C:/Eliot/R/win-library/4.0","0.3.1",NA,NA,NA,NA
+"intervals","C:/Eliot/R/win-library/4.0","0.15.2",NA,NA,NA,NA
+"isoband","C:/Eliot/R/win-library/4.0","0.2.2",NA,NA,NA,NA
+"iterators","C:/Eliot/R/win-library/4.0","1.0.12",NA,NA,NA,NA
+"itertools","C:/Eliot/R/win-library/4.0","0.1-3",NA,NA,NA,NA
+"janitor","C:/Eliot/R/win-library/4.0","2.0.1",NA,NA,NA,NA
+"jpeg","C:/Eliot/R/win-library/4.0","0.1-8.1",NA,NA,NA,NA
+"jqr","C:/Eliot/R/win-library/4.0","1.1.0",NA,NA,NA,NA
+"jsonify","C:/Eliot/R/win-library/4.0","1.2.1",NA,NA,NA,NA
+"jsonlite","C:/Eliot/R/win-library/4.0","1.7.0",NA,NA,NA,NA
+"jsonvalidate","C:/Eliot/R/win-library/4.0","1.1.0",NA,NA,NA,NA
+"kableExtra","C:/Eliot/R/win-library/4.0","1.1.0",NA,NA,NA,NA
+"knitr","C:/Eliot/R/win-library/4.0","1.29",NA,NA,NA,NA
+"kSamples","C:/Eliot/R/win-library/4.0","1.2-9",NA,NA,NA,NA
+"labeling","C:/Eliot/R/win-library/4.0","0.3",NA,NA,NA,NA
+"LandR","C:/Eliot/R/win-library/4.0","0.0.8","LandR","PredictiveEcology","development","9880671788288506419995231c3ffddb6fea72d9"
+"LandR.CS","C:/Eliot/R/win-library/4.0","0.0.2.0002","LandR.CS","ianmseddy","HEAD","52a035889f1f4e929f3ce16ab52390f5e7d2d211"
+"later","C:/Eliot/R/win-library/4.0","1.1.0.1",NA,NA,NA,NA
+"latticeExtra","C:/Eliot/R/win-library/4.0","0.6-29",NA,NA,NA,NA
+"lazyeval","C:/Eliot/R/win-library/4.0","0.2.2",NA,NA,NA,NA
+"leafem","C:/Eliot/R/win-library/4.0","0.1.1",NA,NA,NA,NA
+"leafgl","C:/Eliot/R/win-library/4.0","0.1.1","leafgl","r-spatial","master","51e31b18b5a0cbb06882a019a219caf0d064d1da"
+"leaflet","C:/Eliot/R/win-library/4.0","2.0.3",NA,NA,NA,NA
+"leaflet.providers","C:/Eliot/R/win-library/4.0","1.9.0",NA,NA,NA,NA
+"leafpop","C:/Eliot/R/win-library/4.0","0.0.5",NA,NA,NA,NA
+"leafsync","C:/Eliot/R/win-library/4.0","0.1.0",NA,NA,NA,NA
+"lifecycle","C:/Eliot/R/win-library/4.0","0.2.0",NA,NA,NA,NA
+"lintr","C:/Eliot/R/win-library/4.0","2.0.1.9000","lintr","jimhester","HEAD","6d6f837b294fbb21d964807273965e2799281e24"
+"listenv","C:/Eliot/R/win-library/4.0","0.8.0",NA,NA,NA,NA
+"lme4","C:/Eliot/R/win-library/4.0","1.1-23",NA,NA,NA,NA
+"logging","C:/Eliot/R/win-library/4.0","0.10-108",NA,NA,NA,NA
+"lubridate","C:/Eliot/R/win-library/4.0","1.7.9",NA,NA,NA,NA
+"lwgeom","C:/Eliot/R/win-library/4.0","0.2-5",NA,NA,NA,NA
+"magick","C:/Eliot/R/win-library/4.0","2.4.0",NA,NA,NA,NA
+"magrittr","C:/Eliot/R/win-library/4.0","1.5",NA,NA,NA,NA
+"map","C:/Eliot/R/win-library/4.0","0.0.1","map","PredictiveEcology","development","d1f3cfd516d38cf81b16dc6ba79098dcb1a55629"
+"mapdeck","C:/Eliot/R/win-library/4.0","0.3.3",NA,NA,NA,NA
+"maptools","C:/Eliot/R/win-library/4.0","1.0-1",NA,NA,NA,NA
+"mapview","C:/Eliot/R/win-library/4.0","2.7.8",NA,NA,NA,NA
+"markdown","C:/Eliot/R/win-library/4.0","1.1",NA,NA,NA,NA
+"memoise","C:/Eliot/R/win-library/4.0","1.1.0",NA,NA,NA,NA
+"microbenchmark","C:/Eliot/R/win-library/4.0","1.4-7",NA,NA,NA,NA
+"mime","C:/Eliot/R/win-library/4.0","0.9",NA,NA,NA,NA
+"miniUI","C:/Eliot/R/win-library/4.0","0.1.1.1",NA,NA,NA,NA
+"minqa","C:/Eliot/R/win-library/4.0","1.2.4",NA,NA,NA,NA
+"modelr","C:/Eliot/R/win-library/4.0","0.1.8",NA,NA,NA,NA
+"MuMIn","C:/Eliot/R/win-library/4.0","1.43.17",NA,NA,NA,NA
+"munsell","C:/Eliot/R/win-library/4.0","0.5.0",NA,NA,NA,NA
+"mvtnorm","C:/Eliot/R/win-library/4.0","1.1-1",NA,NA,NA,NA
+"nloptr","C:/Eliot/R/win-library/4.0","1.2.2.2",NA,NA,NA,NA
+"nortest","C:/Eliot/R/win-library/4.0","1.0-4",NA,NA,NA,NA
+"openssl","C:/Eliot/R/win-library/4.0","1.4.1",NA,NA,NA,NA
+"parsedate","C:/Eliot/R/win-library/4.0","1.2.0",NA,NA,NA,NA
+"pbapply","C:/Eliot/R/win-library/4.0","1.4-3",NA,NA,NA,NA
+"pemisc","C:/Eliot/R/win-library/4.0","0.0.2.9001","pemisc","PredictiveEcology","development","9cc320d9ca5a3e5d8ac29d9a237e1710637e097f"
+"peutils","C:/Eliot/R/win-library/4.0","0.1.0","peutils","PredictiveEcology","development","440c37f4cee039b860025bb0a9ceddd68d81739e"
+"pillar","C:/Eliot/R/win-library/4.0","1.4.4",NA,NA,NA,NA
+"pkgbuild","C:/Eliot/R/win-library/4.0","1.0.8",NA,NA,NA,NA
+"pkgconfig","C:/Eliot/R/win-library/4.0","2.0.3",NA,NA,NA,NA
+"pkgdown","C:/Eliot/R/win-library/4.0","1.5.1",NA,NA,NA,NA
+"pkgload","C:/Eliot/R/win-library/4.0","1.1.0",NA,NA,NA,NA
+"plainview","C:/Eliot/R/win-library/4.0","0.1.0",NA,NA,NA,NA
+"plogr","C:/Eliot/R/win-library/4.0","0.2.0",NA,NA,NA,NA
+"plotly","C:/Eliot/R/win-library/4.0","4.9.2.1",NA,NA,NA,NA
+"plyr","C:/Eliot/R/win-library/4.0","1.8.6",NA,NA,NA,NA
+"png","C:/Eliot/R/win-library/4.0","0.1-7",NA,NA,NA,NA
+"praise","C:/Eliot/R/win-library/4.0","1.0.0",NA,NA,NA,NA
+"prettyunits","C:/Eliot/R/win-library/4.0","1.1.1",NA,NA,NA,NA
+"processx","C:/Eliot/R/win-library/4.0","3.4.2",NA,NA,NA,NA
+"profvis","C:/Eliot/R/win-library/4.0","0.3.6",NA,NA,NA,NA
+"progress","C:/Eliot/R/win-library/4.0","1.2.2",NA,NA,NA,NA
+"promises","C:/Eliot/R/win-library/4.0","1.1.1",NA,NA,NA,NA
+"protolite","C:/Eliot/R/win-library/4.0","2.1",NA,NA,NA,NA
+"pryr","C:/Eliot/R/win-library/4.0","0.1.4",NA,NA,NA,NA
+"ps","C:/Eliot/R/win-library/4.0","1.3.3",NA,NA,NA,NA
+"purrr","C:/Eliot/R/win-library/4.0","0.3.4",NA,NA,NA,NA
+"qs","C:/Eliot/R/win-library/4.0","0.22.1",NA,NA,NA,NA
+"quickPlot","C:/Eliot/R/win-library/4.0","0.1.6",NA,NA,NA,NA
+"R.methodsS3","C:/Eliot/R/win-library/4.0","1.8.0",NA,NA,NA,NA
+"R.oo","C:/Eliot/R/win-library/4.0","1.23.0",NA,NA,NA,NA
+"R.utils","C:/Eliot/R/win-library/4.0","2.9.2",NA,NA,NA,NA
+"R6","C:/Eliot/R/win-library/4.0","2.4.1",NA,NA,NA,NA
+"RandomFields","C:/Eliot/R/win-library/4.0","3.3.8",NA,NA,NA,NA
+"RandomFieldsUtils","C:/Eliot/R/win-library/4.0","0.5.3",NA,NA,NA,NA
+"rapidjsonr","C:/Eliot/R/win-library/4.0","1.2.0",NA,NA,NA,NA
+"RApiSerialize","C:/Eliot/R/win-library/4.0","0.1.0",NA,NA,NA,NA
+"rappdirs","C:/Eliot/R/win-library/4.0","0.3.1",NA,NA,NA,NA
+"raster","C:/Eliot/R/win-library/4.0","3.3-13",NA,NA,NA,NA
+"rasterVis","C:/Eliot/R/win-library/4.0","0.48",NA,NA,NA,NA
+"rcmdcheck","C:/Eliot/R/win-library/4.0","1.3.3",NA,NA,NA,NA
+"RColorBrewer","C:/Eliot/R/win-library/4.0","1.1-2",NA,NA,NA,NA
+"Rcpp","C:/Eliot/R/win-library/4.0","1.0.5",NA,NA,NA,NA
+"RcppArmadillo","C:/Eliot/R/win-library/4.0","0.9.900.1.0",NA,NA,NA,NA
+"RcppEigen","C:/Eliot/R/win-library/4.0","0.3.3.7.0",NA,NA,NA,NA
+"RcppParallel","C:/Eliot/R/win-library/4.0","5.0.2",NA,NA,NA,NA
+"RCurl","C:/Eliot/R/win-library/4.0","1.98-1.2",NA,NA,NA,NA
+"readr","C:/Eliot/R/win-library/4.0","1.3.1",NA,NA,NA,NA
+"readxl","C:/Eliot/R/win-library/4.0","1.3.1",NA,NA,NA,NA
+"rematch","C:/Eliot/R/win-library/4.0","1.0.1",NA,NA,NA,NA
+"rematch2","C:/Eliot/R/win-library/4.0","2.1.2",NA,NA,NA,NA
+"remotes","C:/Eliot/R/win-library/4.0","2.2.0",NA,NA,NA,NA
+"reprex","C:/Eliot/R/win-library/4.0","0.3.0",NA,NA,NA,NA
+"reproducible","C:/Eliot/R/win-library/4.0","1.2.1.9005","reproducible","PredictiveEcology","development","cc7537154c4737e8675e126154f0b1bd6831bbd0"
+"Require","C:/Eliot/R/win-library/4.0","0.0.8.9029",NA,NA,NA,NA
+"reshape","C:/Eliot/R/win-library/4.0","0.8.8",NA,NA,NA,NA
+"reshape2","C:/Eliot/R/win-library/4.0","1.4.4",NA,NA,NA,NA
+"rex","C:/Eliot/R/win-library/4.0","1.2.0",NA,NA,NA,NA
+"rgdal","C:/Eliot/R/win-library/4.0","1.5-10",NA,NA,NA,NA
+"rgeos","C:/Eliot/R/win-library/4.0","0.5-3",NA,NA,NA,NA
+"rhub","C:/Eliot/R/win-library/4.0","1.1.1",NA,NA,NA,NA
+"rlang","C:/Eliot/R/win-library/4.0","0.4.7",NA,NA,NA,NA
+"rmapshaper","C:/Eliot/R/win-library/4.0","0.4.4",NA,NA,NA,NA
+"rmarkdown","C:/Eliot/R/win-library/4.0","2.3",NA,NA,NA,NA
+"roxygen2","C:/Eliot/R/win-library/4.0","7.1.1",NA,NA,NA,NA
+"rprojroot","C:/Eliot/R/win-library/4.0","1.3-2",NA,NA,NA,NA
+"RSAGA","C:/Eliot/R/win-library/4.0","1.3.0",NA,NA,NA,NA
+"RSQLite","C:/Eliot/R/win-library/4.0","2.2.0",NA,NA,NA,NA
+"rstudioapi","C:/Eliot/R/win-library/4.0","0.11",NA,NA,NA,NA
+"rvcheck","C:/Eliot/R/win-library/4.0","0.1.8",NA,NA,NA,NA
+"rversions","C:/Eliot/R/win-library/4.0","2.0.2",NA,NA,NA,NA
+"rvest","C:/Eliot/R/win-library/4.0","0.3.5",NA,NA,NA,NA
+"satellite","C:/Eliot/R/win-library/4.0","1.0.2",NA,NA,NA,NA
+"scales","C:/Eliot/R/win-library/4.0","1.1.1",NA,NA,NA,NA
+"selectr","C:/Eliot/R/win-library/4.0","0.4-2",NA,NA,NA,NA
+"sessioninfo","C:/Eliot/R/win-library/4.0","1.1.1",NA,NA,NA,NA
+"sf","C:/Eliot/R/win-library/4.0","0.9-4",NA,NA,NA,NA
+"sfheaders","C:/Eliot/R/win-library/4.0","0.2.2",NA,NA,NA,NA
+"shapefiles","C:/Eliot/R/win-library/4.0","0.7",NA,NA,NA,NA
+"shiny","C:/Eliot/R/win-library/4.0","1.5.0",NA,NA,NA,NA
+"showtext","C:/Eliot/R/win-library/4.0","0.8-1",NA,NA,NA,NA
+"showtextdb","C:/Eliot/R/win-library/4.0","3.0",NA,NA,NA,NA
+"snakecase","C:/Eliot/R/win-library/4.0","0.11.0",NA,NA,NA,NA
+"sourcetools","C:/Eliot/R/win-library/4.0","0.1.7",NA,NA,NA,NA
+"sp","C:/Eliot/R/win-library/4.0","1.4-2",NA,NA,NA,NA
+"spacetime","C:/Eliot/R/win-library/4.0","1.2-3",NA,NA,NA,NA
+"SpaDES","C:/Eliot/R/win-library/4.0","2.0.5","SpaDES","PredictiveEcology","development","c2285635306804fc394b8da92c6cace004f1a798"
+"SpaDES.addins","C:/Eliot/R/win-library/4.0","0.1.2","SpaDES.addins","PredictiveEcology","development","de8a9d6b348cc77f3637da6749e2887a4b5c9521"
+"SpaDES.core","C:/Eliot/R/win-library/4.0","1.0.0",NA,NA,NA,NA
+"SpaDES.experiment","C:/Eliot/R/win-library/4.0","0.0.2.9000","SpaDES.experiment","PredictiveEcology","development","2b8e49b3362ad50e2cd977e69ff12fbb3be6618f"
+"SpaDES.tools","C:/Eliot/R/win-library/4.0","0.3.6",NA,NA,NA,NA
+"spatialwidget","C:/Eliot/R/win-library/4.0","0.2.2",NA,NA,NA,NA
+"stars","C:/Eliot/R/win-library/4.0","0.4-1",NA,NA,NA,NA
+"statmod","C:/Eliot/R/win-library/4.0","1.4.34",NA,NA,NA,NA
+"stringfish","C:/Eliot/R/win-library/4.0","0.12.1",NA,NA,NA,NA
+"stringi","C:/Eliot/R/win-library/4.0","1.4.6",NA,NA,NA,NA
+"stringr","C:/Eliot/R/win-library/4.0","1.4.0",NA,NA,NA,NA
+"SuppDists","C:/Eliot/R/win-library/4.0","1.1-9.5",NA,NA,NA,NA
+"svglite","C:/Eliot/R/win-library/4.0","1.2.3",NA,NA,NA,NA
+"sys","C:/Eliot/R/win-library/4.0","3.3",NA,NA,NA,NA
+"sysfonts","C:/Eliot/R/win-library/4.0","0.8.1",NA,NA,NA,NA
+"systemfonts","C:/Eliot/R/win-library/4.0","0.2.3",NA,NA,NA,NA
+"taskscheduleR","C:/Eliot/R/win-library/4.0","1.4",NA,NA,NA,NA
+"testit","C:/Eliot/R/win-library/4.0","0.11",NA,NA,NA,NA
+"testthat","C:/Eliot/R/win-library/4.0","2.3.2",NA,NA,NA,NA
+"tibble","C:/Eliot/R/win-library/4.0","3.0.1",NA,NA,NA,NA
+"tidyr","C:/Eliot/R/win-library/4.0","1.1.0",NA,NA,NA,NA
+"tidyselect","C:/Eliot/R/win-library/4.0","1.1.0",NA,NA,NA,NA
+"tidyverse","C:/Eliot/R/win-library/4.0","1.3.0",NA,NA,NA,NA
+"tiler","C:/Eliot/R/win-library/4.0","0.2.4",NA,NA,NA,NA
+"tinytex","C:/Eliot/R/win-library/4.0","0.24",NA,NA,NA,NA
+"tmap","C:/Eliot/R/win-library/4.0","3.0",NA,NA,NA,NA
+"tmaptools","C:/Eliot/R/win-library/4.0","3.0",NA,NA,NA,NA
+"triebeard","C:/Eliot/R/win-library/4.0","0.3.0",NA,NA,NA,NA
+"trust","C:/Eliot/R/win-library/4.0","0.1-8",NA,NA,NA,NA
+"units","C:/Eliot/R/win-library/4.0","0.6-7",NA,NA,NA,NA
+"urltools","C:/Eliot/R/win-library/4.0","1.7.3",NA,NA,NA,NA
+"usefulFuns","C:/Eliot/R/win-library/4.0","0.1.0","usefulFuns","tati-micheletti","fileMystery","a0dcfd232ebbe7ddf8ef2c1cb82196e2f271ef04"
+"usethis","C:/Eliot/R/win-library/4.0","1.6.1",NA,NA,NA,NA
+"utf8","C:/Eliot/R/win-library/4.0","1.1.4",NA,NA,NA,NA
+"uuid","C:/Eliot/R/win-library/4.0","0.1-4",NA,NA,NA,NA
+"V8","C:/Eliot/R/win-library/4.0","3.2.0",NA,NA,NA,NA
+"vctrs","C:/Eliot/R/win-library/4.0","0.3.2",NA,NA,NA,NA
+"versions","C:/Eliot/R/win-library/4.0","0.3",NA,NA,NA,NA
+"viridis","C:/Eliot/R/win-library/4.0","0.5.1",NA,NA,NA,NA
+"viridisLite","C:/Eliot/R/win-library/4.0","0.3.0",NA,NA,NA,NA
+"visNetwork","C:/Eliot/R/win-library/4.0","2.0.9",NA,NA,NA,NA
+"visualTest","C:/Eliot/R/win-library/4.0","1.0.0","visualTest","MangoTheCat","master","9b835a707479a9162ca50f108308a5d814bbc923"
+"webshot","C:/Eliot/R/win-library/4.0","0.5.2",NA,NA,NA,NA
+"whisker","C:/Eliot/R/win-library/4.0","0.4",NA,NA,NA,NA
+"whoami","C:/Eliot/R/win-library/4.0","1.3.0",NA,NA,NA,NA
+"withr","C:/Eliot/R/win-library/4.0","2.2.0",NA,NA,NA,NA
+"xfun","C:/Eliot/R/win-library/4.0","0.15",NA,NA,NA,NA
+"XML","C:/Eliot/R/win-library/4.0","3.99-0.3",NA,NA,NA,NA
+"xml2","C:/Eliot/R/win-library/4.0","1.3.2",NA,NA,NA,NA
+"xmlparsedata","C:/Eliot/R/win-library/4.0","1.0.3",NA,NA,NA,NA
+"xopen","C:/Eliot/R/win-library/4.0","1.0.0",NA,NA,NA,NA
+"xtable","C:/Eliot/R/win-library/4.0","1.8-4",NA,NA,NA,NA
+"xts","C:/Eliot/R/win-library/4.0","0.12-0",NA,NA,NA,NA
+"yaml","C:/Eliot/R/win-library/4.0","2.2.1",NA,NA,NA,NA
+"zoo","C:/Eliot/R/win-library/4.0","1.8-8",NA,NA,NA,NA
+"base","C:/Program Files/R/R-4.0.2/library","4.0.2",NA,NA,NA,NA
+"boot","C:/Program Files/R/R-4.0.2/library","1.3-25",NA,NA,NA,NA
+"class","C:/Program Files/R/R-4.0.2/library","7.3-17",NA,NA,NA,NA
+"cluster","C:/Program Files/R/R-4.0.2/library","2.1.0",NA,NA,NA,NA
+"codetools","C:/Program Files/R/R-4.0.2/library","0.2-16",NA,NA,NA,NA
+"compiler","C:/Program Files/R/R-4.0.2/library","4.0.2",NA,NA,NA,NA
+"datasets","C:/Program Files/R/R-4.0.2/library","4.0.2",NA,NA,NA,NA
+"foreign","C:/Program Files/R/R-4.0.2/library","0.8-80",NA,NA,NA,NA
+"graphics","C:/Program Files/R/R-4.0.2/library","4.0.2",NA,NA,NA,NA
+"grDevices","C:/Program Files/R/R-4.0.2/library","4.0.2",NA,NA,NA,NA
+"grid","C:/Program Files/R/R-4.0.2/library","4.0.2",NA,NA,NA,NA
+"KernSmooth","C:/Program Files/R/R-4.0.2/library","2.23-17",NA,NA,NA,NA
+"lattice","C:/Program Files/R/R-4.0.2/library","0.20-41",NA,NA,NA,NA
+"MASS","C:/Program Files/R/R-4.0.2/library","7.3-51.6",NA,NA,NA,NA
+"Matrix","C:/Program Files/R/R-4.0.2/library","1.2-18",NA,NA,NA,NA
+"methods","C:/Program Files/R/R-4.0.2/library","4.0.2",NA,NA,NA,NA
+"mgcv","C:/Program Files/R/R-4.0.2/library","1.8-31",NA,NA,NA,NA
+"nlme","C:/Program Files/R/R-4.0.2/library","3.1-148",NA,NA,NA,NA
+"nnet","C:/Program Files/R/R-4.0.2/library","7.3-14",NA,NA,NA,NA
+"parallel","C:/Program Files/R/R-4.0.2/library","4.0.2",NA,NA,NA,NA
+"rpart","C:/Program Files/R/R-4.0.2/library","4.1-15",NA,NA,NA,NA
+"spatial","C:/Program Files/R/R-4.0.2/library","7.3-12",NA,NA,NA,NA
+"splines","C:/Program Files/R/R-4.0.2/library","4.0.2",NA,NA,NA,NA
+"stats","C:/Program Files/R/R-4.0.2/library","4.0.2",NA,NA,NA,NA
+"stats4","C:/Program Files/R/R-4.0.2/library","4.0.2",NA,NA,NA,NA
+"survival","C:/Program Files/R/R-4.0.2/library","3.1-12",NA,NA,NA,NA
+"tcltk","C:/Program Files/R/R-4.0.2/library","4.0.2",NA,NA,NA,NA
+"tools","C:/Program Files/R/R-4.0.2/library","4.0.2",NA,NA,NA,NA
+"translations","C:/Program Files/R/R-4.0.2/library","4.0.2",NA,NA,NA,NA
+"utils","C:/Program Files/R/R-4.0.2/library","4.0.2",NA,NA,NA,NA
