@@ -1,6 +1,6 @@
-35ddc91254c664f01afa02b644830ad2 *DESCRIPTION
+4e894b67d9bd467c17ac1841786f8162 *DESCRIPTION
 28dd56b044e7a0f9ea4a33c431e44935 *NAMESPACE
-56212464907cb90bfcf1d67ea598f65f *NEWS.md
+352020320c8be282220488f8633489b5 *NEWS.md
 c6b9eacb7b093f4adcdd75dd96e724f7 *R/CRAN.R
 5cd9d16bae4e529e2160c0927b66c8a6 *R/Require-helpers.R
 f73fee7709001433698e3c5d2b594493 *R/Require-package.R
@@ -30,8 +30,8 @@ effb3d4b0b70300cf7d1d4160c3a6a0e *man/Require.Rd
 11e9f56ceb12d24b3e203d65bb618a38 *man/messageDF.Rd
 199d8780805f9a1656bd29e4e2b78298 *man/modifyList2.Rd
 258677bf191bcc486af82153b0bd799f *man/normPath.Rd
-81efa79b9155be026972a756e027c2b7 *man/pkgDep.Rd
-d7bc53652d0b4609f2a56399d0a7ce5d *man/pkgDepIfDepRemoved.Rd
+b62e0bdd63a56bb9081dc53bca3ea925 *man/pkgDep.Rd
+ab9afba29269b675bab4e2be2df0a715 *man/pkgDepIfDepRemoved.Rd
 9139a23d896545f2c5879c78ba210b51 *man/pkgSnapshot.Rd
 66aebc91df3fdd794b5e1d5cb5ee98c9 *man/setLibPaths.Rd
 41d3b0a126797dcc4b70908c5b18f2d5 *man/setup.Rd
@@ -39,10 +39,10 @@ d7bc53652d0b4609f2a56399d0a7ce5d *man/pkgDepIfDepRemoved.Rd
 fd851f6466c03624e0964744145eb3cb *man/tempfile2.Rd
 1f8f1092f2fdd2f4554b1332a079ed1e *man/trimVersionNumber.Rd
 dfb36256ae40c17422c0dc50af6d40ea *tests/test-all.R
-29294218ca4bd29157958808c16435d7 *tests/testit/test-0pkgSnapshot.R
-bf7dda87b137861303b533d2803b1f4c *tests/testit/test-1packages.R
+ee553a5eebb81cffa68212ae6dd292a9 *tests/testit/test-0pkgSnapshot.R
+bd8b6e3cd3c75567a6e2d083a736b669 *tests/testit/test-1packages.R
 1872bf12ab1f2c196a426e8f90ad0817 *tests/testit/test-extract.R
-1b6c6c21de89bae9c534e6be0920c315 *tests/testit/test-helpers.R
-0e0a39c7269be0e9d60b059e367b6a9f *tests/testit/test-other.R
-d22b324210a133b65a7a04cbcb5fa839 *tests/testit/test-packagesLong.R
-7fa9631426f7003358166986ecc95f65 *tests/testit/test-pkgDep.R
+f62c4a785c149a2e66e22679567af34b *tests/testit/test-helpers.R
+7c15a439c057dbbedc093893bf27a429 *tests/testit/test-other.R
+94354c71c31bf8a05363aef02bc8deb6 *tests/testit/test-packagesLong.R
+7c2010d381b5eba10a8fe2889cdf6795 *tests/testit/test-pkgDep.R
