@@ -4,7 +4,7 @@
 #'
 #' @param pkgs A character string vector of packages with or without GitHub path or versions
 #' @return Just the package names without extraneous info.
-#' @seealso \code{\link{trimVersionNumber}}
+#' @seealso [trimVersionNumber()]
 #' @export
 #' @rdname extractPkgName
 #' @examples
@@ -19,12 +19,13 @@ extractPkgName <- function(pkgs) {
   }
 
   pkgNames <- trimVersionNumber(pkgs)
-  withGitName <- extractPkgGitHub(pkgNames)
-  isNAWithGitName <- is.na(withGitName)
-  if (any(!isNAWithGitName)) {
-    stripped <- unlist(lapply(strsplit(pkgNames[!isNAWithGitName], split = "/|@"), function(x) x[2]))
-    pkgNames[!isNAWithGitName] <- stripped
+  gitPkgs <- extractPkgGitHub(pkgNames)
+  whGitPkgs <- is.na(gitPkgs)
+
+  if (any(!whGitPkgs)) {
+    pkgNames[!whGitPkgs] <- gitPkgs[!whGitPkgs]
   }
+
   pkgNames
 }
 
@@ -56,11 +57,13 @@ extractInequality <- function(pkgs) {
 #' @examples
 #' extractPkgGitHub("PredictiveEcology/Require")
 extractPkgGitHub <- function(pkgs) {
-  isGH <- grepl("/", pkgs, perl = FALSE)
+  isGH <- grepl("/|@", pkgs, perl = FALSE)
   if (any(isGH)) {
     a <- trimVersionNumber(pkgs[isGH])
+    hasRepo <- grepl("/", a)
+    hasBranch <- grepl("@", a)
     a <- strsplit(a, split = "/|@")
-    a <- lapply(a, function(x) x[2])
+    a <- Map(x = a, hasRep = hasRepo, function(x, hasRep) x[1 + hasRep])
     pkgs[isGH] <- unlist(a)
     if (any(!isGH))
       pkgs[!isGH] <- NA
@@ -78,7 +81,7 @@ extractPkgGitHub <- function(pkgs) {
 #' @inheritParams extractPkgName
 #'
 #' @rdname trimVersionNumber
-#' @seealso \code{\link{extractPkgName}}
+#' @seealso [extractPkgName()]
 #' @export
 #' @examples
 #' trimVersionNumber("PredictiveEcology/Require (<=0.0.1)")
@@ -95,6 +98,9 @@ trimVersionNumber <- function(pkgs) {
   }
 }
 
+rmExtraSpaces <- function(string) {
+  gsub(" {2, }", " ", string)
+}
 .grepVersionNumber <- " *\\(.*"
 
 grepExtractPkgs <- ".*\\([ \n\t]*(<*>*=*)[ \n\t]*(.*)\\)"

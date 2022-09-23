@@ -1,4 +1,60 @@
-Known issues: https://github.com/PredictiveEcology/Require/issues
+Known issues: <https://github.com/PredictiveEcology/Require/issues>
+
+version 0.1.2
+==============
+## dependencies
+* drop support for R 3.6 (R >= 4.0 are supported)
+
+## enhancements
+* Now can use `GITHUB_PAT` environment variable, if set, when it accesses GitHub.com repositories (files or entire repository)
+* Attempt to capture and correct cases where GitHub.com branches are incorrectly labelled `master` instead of `main` (or vice versa)
+* much quieter messaging by default (can increase with verbose = 1)
+* `require` argument in `Require` can now be a character vector indicating which packages should be attached, not just installed. Note: by default, all packages that are passed to `packages` are attached if `require = TRUE`
+
+* much faster installations:
+
+  * When source packages, they are grouped and installed together using the internal parallelism of install.packages (setting Ncpus option to 4)
+  * when binary, passes vectors to install.packages so much faster.
+  * all packages are installed in install-safe groups for speed
+
+* can use pak package under the hood when options("Require.usepak" = TRUE), though there are still many cases that pak cannot deal with. Users should try and determine if this option delivers as expected. pak installs tend to be slightly faster if they work correctly.
+* binary package caching is turned in by default in a user-specific standard directory, making repeat installations (on same system, or shared drive systems) much faster.
+* MRAN installs for Windows are now much more robust under many conditions.
+* archived packages (ie no longer on CRAN) will now be found and installed (latest available version)
+* more robust dependency identification even for archived or older packages or package versions (including their dependencies)
+* MRAN binaries will be used in MacOSX.
+* improved installation of older packages (e.g. when dependencies are removed from CRAN, or source versions can't be easily compiled)
+* several other minor improvements in package dependency resolution and installation.
+
+## bugfixes
+* fix issue with 'dot directories' in `normPath()`.
+* identified possible bug with `install.packages` when `options(Ncpus = XX)` where XX is a number > 1. Some packages are skipped. `Require` now captures this and attempts to install the ones that did not get correctly installed.
+* multiple fixes for certain edge cases.
+
+version 0.1.1
+==============
+## enhancements
+* can now use `pak` if `options("Require.usepak" = TRUE)` and there are no version specifications (i.e., if a user specifies e.g., `Require("reproducible (<= 1.2.9))`, then the non-`pak` approach will be used)
+
+## bugfixes
+* fixed an error installing certain GitHub packages
+
+version 0.1.0
+==============
+## enhancements
+* install CRAN packages using vectorized `install.packages` --> much faster
+* now uses internal `installGithubPackage` instead of `remotes::install_github`
+* this previous means that all installations use `install.packages` directly
+* remove dependency on `remotes`
+
+## bugfixes
+* `Require` would silently fail to install a GitHub package if there was a warning during the installation. These warnings are now correctly captured, without stopping the installation.
+* bugfix where a package being installed from GitHub directly had a `Remotes` field for a package that was in `Suggests` (in its DESCRIPTION file). It would install this `Remotes` package even though it was only in `Suggests`
+* bugfix when user supplies a non-CRAN `repos` argument to `Require`. It was not correctly using. Thanks to @CeresBarros for identifying issue #30
+* bugfix "All packages appear to have installed correctly" was misreporting under some cases.
+* `repos` argument not correctly passed into `doInstalls` from `Require`. This meant that installs would not respect a user supplied repos, but would use the `options("repos")` instead.
+* `extractPkgNames` now allows GitHub packages that have the repository omitted, i.e., they only have `@`. This is useful if there is a default expectation for a github repository
+* better handling of GitHub package install issues
 
 version 0.0.13
 ==============
@@ -21,6 +77,7 @@ version 0.0.12
 * small minor bugfixes
 * In cases where a DESCRIPTION file had both a package with a minimum version (e.g., in Imports) and a REMOTES: for that package (without a minimum version, but with a branch, say), `Require` would use the REMOTES: entry. But since that means there is no minimum package version, and `Require` does not automatically install a package that is not violating a minimum version number, it would not install anything. Now, it harmonizes the 2 entries for a given package, and uses both the minimum version number and the git branch as the potential source to find that version number.
 * allow either `master` or `main` branches to be installed from GitHub, without needing to specify (#26)
+* fix use of options in `setup()`
 
 version 0.0.10
 ==============

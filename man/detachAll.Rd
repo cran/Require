@@ -4,7 +4,12 @@
 \alias{detachAll}
 \title{Detach and unload all packages}
 \usage{
-detachAll(pkgs, dontTry = NULL, doSort = TRUE)
+detachAll(
+  pkgs,
+  dontTry = NULL,
+  doSort = TRUE,
+  verbose = getOption("Require.verbose")
+)
 }
 \arguments{
 \item{pkgs}{A character vector of packages to detach. Will be topologically sorted
@@ -16,6 +21,10 @@ by a user if they find a package fails in attempts to unload it, e.g., "ps"}
 \item{doSort}{If \code{TRUE} (the default), then the \code{pkgs} will be
 topologically sorted. If \code{FALSE}, then it won't. Useful if the
 \code{pkgs} are already sorted.}
+
+\item{verbose}{Numeric or logical indicating how verbose should the function be.
+If -1 or less, then as little verbosity as possible.
+If 0 or FALSE, then minimal outputs; if \code{1} or TRUE, more outputs; \code{2} even more.}
 }
 \value{
 A numeric named vector, with names of the packages that were attempted.
@@ -28,6 +37,6 @@ This uses \code{pkgDepTopoSort} internally so that the package
 dependency tree is determined, and then packages are unloaded
 in the reverse order. Some packages don't unload successfully for
 a variety of reasons. Several known packages that have this problem
-are identified internally and *not* unloaded. Currently, these are
+are identified internally and \emph{not} unloaded. Currently, these are
 \code{glue}, \code{rlang}, \code{ps}, \code{ellipsis}, and, \code{processx}.
 }

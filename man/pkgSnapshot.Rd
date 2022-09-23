@@ -9,12 +9,13 @@ pkgSnapshot(
   libPaths,
   standAlone = FALSE,
   purge = getOption("Require.purge", FALSE),
-  exact = TRUE
+  exact = TRUE,
+  verbose = getOption("Require.verbose")
 )
 }
 \arguments{
 \item{packageVersionFile}{A filename to save the packages and their currently
-installed version numbers. Defaults to \code{".packageVersions.txt"}.
+installed version numbers. Defaults to \code{"packageVersions.txt"}.
 If this is specified to be \code{NULL}, the function will return the exact
 \code{Require} call needed to install all the packages at their current
 versions. This can be useful to add to a script to allow for reproducibility of
@@ -24,36 +25,39 @@ a script.}
 Defaults to the \code{.libPaths()[1]}.}
 
 \item{standAlone}{Logical. If \code{TRUE}, all packages will be installed to and loaded from
-                  the \code{libPaths} only. If \code{FALSE}, then \code{libPath} will
-                  be prepended to \code{.libPaths()} during the \code{Require} call,
-                  resulting in shared packages, i.e.,
-                  it will include the user's default package folder(s).
-                  This can be create dramatically faster
-installs if the user has a substantial number of the packages already in
-their personal library. Default \code{FALSE} to minimize package installing.}
+the \code{libPaths} only. NOTE: If \code{TRUE}, THIS WILL CHANGE THE USER'S \code{.libPaths()}, similar
+to e.g., the \code{checkpoint} package.
+If \code{FALSE}, then \code{libPath} will be prepended to \code{.libPaths()} during the \code{Require} call,
+resulting in shared packages, i.e., it will include the user's default package folder(s).
+This can be create dramatically faster installs if the user has a substantial number of
+the packages already in their personal library.
+Default \code{FALSE} to minimize package installing.}
 
-\item{purge}{Logical. Should all caches be purged Default is 
-\code{getOption("Require.purge", FALSE)}.
-There is a lot of internal caching of results throughout 
-the \code{Require} package. These help with speed and reduce calls to internet sources.
-However, sometimes these caches must be purged. The cached values are renewed 
-when found to be too old, with the age limit. 
-This maximum age can be set in seconds with the environment variable 
-\code{R_AVAILABLE_PACKAGES_CACHE_CONTROL_MAX_AGE}, or if unset, 
-defaults to 3600  (one hour -- see
-\code{\link[utils]{available.packages}}).
+\item{purge}{Logical. Should all caches be purged?
+Default is \code{getOption("Require.purge", FALSE)}.
+There is a lot of internal caching of results throughout the \code{Require} package.
+These help with speed and reduce calls to internet sources.
+However, sometimes these caches must be purged.
+The cached values are renewed when found to be too old, with the age limit.
+This maximum age can be set in seconds with the environment variable
+\code{R_AVAILABLE_PACKAGES_CACHE_CONTROL_MAX_AGE}, or if unset,
+defaults to 3600  (one hour -- see \code{\link[utils:available.packages]{utils::available.packages}}).
 
-Internally, there are calls to \code{available.packages}}
+Internally, there are calls to \code{available.packages}.}
 
 \item{exact}{Logical. If \code{TRUE}, the default, then for GitHub packages, it
-will install the exact SHA, rather than the head of the account/repo@branch. For
+will install the exact SHA, rather than the head of the \code{account/repo@branch}. For
 CRAN packages, it will install the exact version. If \code{FALSE}, then GitHub
-packages will identify their branch if that had been specified upon installation, 
+packages will identify their branch if that had been specified upon installation,
 not a SHA. If the package had been installed with reference to a SHA, then it
-will return the SHA as it does not know what branch it came from. 
-Similarly, CRAN packages will
-report their version and specify with a \code{>=}, allowing a subsequent user
+will return the SHA as it does not know what branch it came from.
+Similarly, CRAN packages will report their version and specify with a \code{>=},
+allowing a subsequent user
 to install with a minimum version number, as opposed to an exact version number.}
+
+\item{verbose}{Numeric or logical indicating how verbose should the function be.
+If -1 or less, then as little verbosity as possible.
+If 0 or FALSE, then minimal outputs; if \code{1} or TRUE, more outputs; \code{2} even more.}
 }
 \description{
 This can be used later by \code{installVersions} to install or re-install the correct versions.
@@ -63,12 +67,12 @@ A file is written with the package names and versions of all packages within \co
 This can later be passed to \code{Require}.
 }
 \examples{
-pkgSnapFile <- tempfile()
+tmpdir <- checkPath(file.path(tempdir(), "example_pkgSnapshot"), create = TRUE)
+pkgSnapFile <- tempfile(tmpdir = tmpdir)
 pkgSnapshot(pkgSnapFile, .libPaths()[1])
 data.table::fread(pkgSnapFile)
 
 \dontrun{
-
 # An example to move this file to a new computer
 library(Require)
 setLibPaths(.libPaths()[1])  # this will only do a snapshot of the main user library
@@ -78,17 +82,17 @@ pkgSnapshot(fileName)
 # library(googledrive)
 # (out <- googledrive::drive_upload(fileName)) # copy the file id to clipboard
 
-# On new machine 
+# On new machine
 fileName <- "packageSnapshot.txt"
 library(Require)
 # get the file from email, slack, cloud etc.
 # library(googledrive)
 # drive_download(as_id(PASTE-THE-FILE-ID-HERE), path = fileName)
-setLibPaths("~/RPackages") # start with an empty folder for new 
-                           # library to minimize package version conflicts
+setLibPaths("~/RPackages") # start with an empty folder for new
+# library to minimize package version conflicts
 Require(packageVersionFile = fileName)
 
-# Passing NULL --> results in output to console with exact Require call to 
+# Passing NULL --> results in output to console with exact Require call to
 #   achieve the packages installations
 pkgSnapshot(NULL, libPaths = .libPaths()[1], exact = FALSE)
 
@@ -99,6 +103,10 @@ sink()
 
 # Will show "minimum package version"
 pkgSnapshot(NULL, libPaths = .libPaths()[1], exact = FALSE)
+
 }
+
+# cleanup
+unlink(tmpdir, recursive = TRUE)
 
 }

@@ -8,7 +8,8 @@ setLibPaths(
   libPaths,
   standAlone = TRUE,
   updateRprofile = getOption("Require.updateRprofile", FALSE),
-  exact = FALSE
+  exact = FALSE,
+  verbose = getOption("Require.verbose")
 )
 }
 \arguments{
@@ -16,13 +17,13 @@ setLibPaths(
 components of \code{.libPath()}}
 
 \item{standAlone}{Logical. If \code{TRUE}, all packages will be installed to and loaded from
-                  the \code{libPaths} only. If \code{FALSE}, then \code{libPath} will
-                  be prepended to \code{.libPaths()} during the \code{Require} call,
-                  resulting in shared packages, i.e.,
-                  it will include the user's default package folder(s).
-                  This can be create dramatically faster
-installs if the user has a substantial number of the packages already in
-their personal library. Default \code{FALSE} to minimize package installing.}
+the \code{libPaths} only. NOTE: If \code{TRUE}, THIS WILL CHANGE THE USER'S \code{.libPaths()}, similar
+to e.g., the \code{checkpoint} package.
+If \code{FALSE}, then \code{libPath} will be prepended to \code{.libPaths()} during the \code{Require} call,
+resulting in shared packages, i.e., it will include the user's default package folder(s).
+This can be create dramatically faster installs if the user has a substantial number of
+the packages already in their personal library.
+Default \code{FALSE} to minimize package installing.}
 
 \item{updateRprofile}{Logical or Character string. If \code{TRUE}, then
 this function will put several lines of code in the current directory's \code{.Rprofile}
@@ -37,6 +38,10 @@ can be set with an option or within a single call.}
 on the system. There are some cases where this behaviour is not desirable.
 Set \code{exact} to \code{TRUE} to override this automatic appending and use
 the exact, unaltered \code{libPaths}. Default is \code{FALSE}}
+
+\item{verbose}{Numeric or logical indicating how verbose should the function be.
+If -1 or less, then as little verbosity as possible.
+If 0 or FALSE, then minimal outputs; if \code{1} or TRUE, more outputs; \code{2} even more.}
 }
 \value{
 The main point of this function is to set \code{.libPaths()}, which
@@ -60,11 +65,12 @@ A different, likely non-approved by CRAN approach that also works is here:
 \url{https://stackoverflow.com/a/36873741/3890027}.
 }
 \examples{
+\dontrun{
 origDir <- setwd(tempdir())
-setLibPaths("newProjectLib") # set a new R package library locally
+td <- tempdir()
+setLibPaths(td) # set a new R package library locally
 setLibPaths() # reset it to original
 setwd(origDir)
-\dontrun{
 # Using standAlone = FALSE means that newly installed packages will be installed
 #   in the new package library, but loading packages can come from any of the ones
 #   listed in .libPaths()
@@ -73,6 +79,5 @@ setLibPaths("~/newProjectLib", standAlone = FALSE) # will have 2 or more paths
 
 # remove the custom .libPaths()
 Require::setLibPaths() # reset to previous; remove from .Rprofile because libPath arg is empty
-
 }
 }

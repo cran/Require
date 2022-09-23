@@ -6,6 +6,7 @@
 \alias{normPath,list-method}
 \alias{normPath,NULL-method}
 \alias{normPath,missing-method}
+\alias{normPath,logical-method}
 \title{Normalize filepath}
 \usage{
 normPath(path)
@@ -14,9 +15,11 @@ normPath(path)
 
 \S4method{normPath}{list}(path)
 
-\S4method{normPath}{`NULL`}(path)
+\S4method{normPath}{NULL}(path)
 
 \S4method{normPath}{missing}()
+
+\S4method{normPath}{logical}(path)
 }
 \arguments{
 \item{path}{A character vector of filepaths.}
@@ -26,9 +29,11 @@ Character vector of cleaned up filepaths.
 }
 \description{
 Checks the specified filepath for formatting consistencies:
- 1) use slash instead of backslash;
- 2) do tilde etc. expansion;
- 3) remove trailing slash.
+\enumerate{
+\item use slash instead of backslash;
+\item do tilde etc. expansion;
+\item remove trailing slash.
+}
 }
 \examples{
 ## normalize file paths
@@ -52,5 +57,6 @@ tryCatch(checkPath(tmpdir, create = FALSE), error = function(e) FALSE) ## FALSE
 checkPath(tmpdir, create = TRUE)
 dir.exists(tmpdir) ## TRUE
 
-unlink(tmpdir, recursive = TRUE)
+unlink(tmpdir, recursive = TRUE) # clean up
+
 }

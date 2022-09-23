@@ -11,9 +11,19 @@
 \usage{
 getPkgVersions(pkgDT, install = TRUE)
 
-getAvailable(pkgDT, purge = FALSE, repos = getOption("repos"))
+getAvailable(
+  pkgDT,
+  purge = FALSE,
+  repos = getOption("repos"),
+  verbose = getOption("Require.verbose")
+)
 
-installFrom(pkgDT, purge = FALSE, repos = getOption("repos"))
+installFrom(
+  pkgDT,
+  purge = FALSE,
+  repos = getOption("repos"),
+  verbose = getOption("Require.verbose")
+)
 
 doInstalls(
   pkgDT,
@@ -21,58 +31,63 @@ doInstalls(
   install.packagesArgs,
   install = TRUE,
   repos = getOption("repos"),
+  verbose = getOption("Require.verbose"),
   ...
 )
 
-doLoading(pkgDT, require = TRUE, ...)
+doLoading(pkgDT, require = TRUE, verbose = getOption("Require.verbose"), ...)
 
 archiveVersionsAvailable(package, repos)
 }
 \arguments{
-\item{pkgDT}{A character string with full package names or a data.table
+\item{pkgDT}{A character string with full package names or a \code{data.table}
 with at least 2 columns \code{"Package"} and \code{"packageFullName"}.}
 
-\item{install}{Logical or "force". If \code{FALSE}, this will not try to
-install anything. If \code{"force"}, then it will force installation of
-requested packages, mimicking a call to e.g., \code{install.packages}. If
-\code{TRUE}, the default, then this function will try to install any
-missing packages or dependencies.}
+\item{install}{Logical or "force". If \code{FALSE}, this will not try to install anything.
+If \code{"force"}, then it will force installation of requested packages,
+mimicking a call to e.g., \code{install.packages}.
+If \code{TRUE}, the default, then this function will try to install any missing
+packages or dependencies.}
 
-\item{purge}{Logical. Should all caches be purged Default is 
-\code{getOption("Require.purge", FALSE)}.
-There is a lot of internal caching of results throughout 
-the \code{Require} package. These help with speed and reduce calls to internet sources.
-However, sometimes these caches must be purged. The cached values are renewed 
-when found to be too old, with the age limit. 
-This maximum age can be set in seconds with the environment variable 
-\code{R_AVAILABLE_PACKAGES_CACHE_CONTROL_MAX_AGE}, or if unset, 
-defaults to 3600  (one hour -- see
-\code{\link[utils]{available.packages}}).
+\item{purge}{Logical. Should all caches be purged?
+Default is \code{getOption("Require.purge", FALSE)}.
+There is a lot of internal caching of results throughout the \code{Require} package.
+These help with speed and reduce calls to internet sources.
+However, sometimes these caches must be purged.
+The cached values are renewed when found to be too old, with the age limit.
+This maximum age can be set in seconds with the environment variable
+\code{R_AVAILABLE_PACKAGES_CACHE_CONTROL_MAX_AGE}, or if unset,
+defaults to 3600  (one hour -- see \code{\link[utils:available.packages]{utils::available.packages}}).
 
-Internally, there are calls to \code{available.packages}}
+Internally, there are calls to \code{available.packages}.}
 
 \item{repos}{The remote repository (e.g., a CRAN mirror), passed to either
 \code{install.packages}, \code{install_github} or \code{installVersions}.}
 
-\item{install_githubArgs}{List of optional named arguments, passed to \code{install_github}.}
+\item{verbose}{Numeric or logical indicating how verbose should the function be.
+If -1 or less, then as little verbosity as possible.
+If 0 or FALSE, then minimal outputs; if \code{1} or TRUE, more outputs; \code{2} even more.}
+
+\item{install_githubArgs}{List of optional named arguments, passed to \code{install.packages}
+inside \code{installGitHubPackage}.}
 
 \item{install.packagesArgs}{List of optional named arguments, passed to \code{install.packages}.}
 
-\item{...}{Passed to \emph{all} of \code{install_github},
-\code{install.packages}, and \code{remotes::install_version}, i.e., the
-function will error if all of these functions can not use the ... argument.
+\item{...}{Passed to \code{install.packages}.
 Good candidates are e.g., \code{type} or \code{dependencies}. This can be
 used with \code{install_githubArgs} or \code{install.packageArgs} which
 give individual options for those 2 internal function calls.}
 
-\item{require}{Logical. If \code{TRUE}, the default, then the function will
+\item{require}{Logical or character string. If \code{TRUE}, the default, then the function will
 attempt to call \code{require} on all requested \code{packages}, possibly
-after they are installed.}
+after they are installed. If a character string, then it will only call \code{require}
+on those specific packages (i.e., it will install the ones listed in \code{packages}, but
+load the packages listed in \code{require})}
 
 \item{package}{A single package name (without version or github specifications)}
 }
 \value{
-In general, these functions return a data.table with various package
+In general, these functions return a \code{data.table} with various package
 information, installation status, version, available version etc.
 }
 \description{
@@ -80,8 +95,8 @@ While these are not intended to be called manually by users, they may be
 of some use for advanced users.
 }
 \details{
-\code{doInstall} is a wrapper around \code{install.packages},
-\code{remotes::install_github}, and \code{remotes::install_version}.
+\code{doInstall} is a wrapper around \code{utils::install.packages},
+\code{installGithub}, and \code{installCRAN}, and \code{installArchive}
 
 \code{doLoading} is a wrapper around \code{require}.
 
