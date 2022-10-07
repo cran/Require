@@ -328,3 +328,43 @@ messageVerbose <- function(..., verbose = getOption("Require.verbose"),
   if (verbose >= verboseLevel)
     message(...)
 }
+
+
+#' @rdname messageVerbose
+#' @inheritParams Require
+#' @param pre A single text string to paste before the counter
+#' @param post A single text string to paste after the counter
+#' @param counter An integer indicating which iteration is being done
+#' @param total An integer indicating the total number to be done.
+#' @param minCounter An integer indicating the minimum (i.e,. starting value)
+messageVerboseCounter <- function(pre = "", post = "", verbose = getOption("Require.verbose"),
+                                  verboseLevel = 1, counter = 1,
+                                  total = 1, minCounter = 1) {
+  total <- max(counter, total)
+  minCounter <- min(minCounter, counter)
+  mess <- paste0(paddedFloatToChar(counter, padL = nchar(total), pad = " ")
+                 , " of ", total)
+  numCharsNeeded <- nchar(mess) + 1
+  messWithPrePost <- paste0(pre, mess, post)
+  if (counter == minCounter) {
+    messageVerbose(rep(" ", numCharsNeeded), verbose = verbose, verboseLevel = verboseLevel)
+  }
+  messageVerbose(rep("\b", numCharsNeeded),  messWithPrePost,
+                 verbose = verbose, verboseLevel = verboseLevel)
+}
+
+# This environment variable "R_TESTS" is set during testing, and it points to a file
+#   called Startup.Rs that is placed in the .libPaths(). If the .libPaths() is changed
+#   during the testing, then that file will not be found, and install.packages will
+#   fail to install a package with an error of source file not found. See:
+#   https://github.com/HenrikBengtsson/startup/issues/19
+#   The env variable is set here:
+# https://github.com/wch/r-source/blob/8b6429feb661b02e2b2b6df1757b31cf1250a33e/
+#   src/library/tools/R/testing.R#L472-Lundefined
+R_TESTSomit <- function() {
+  origR_TESTS <- Sys.getenv("R_TESTS")
+  if (!identical(origR_TESTS, "")) {
+    Sys.setenv("R_TESTS" = "")
+  }
+  return(origR_TESTS)
+}
