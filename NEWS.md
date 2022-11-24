@@ -1,7 +1,66 @@
 Known issues: <https://github.com/PredictiveEcology/Require/issues>
 
+version 0.2.5
+=============
+
+## enhancements
+* several modifications to enable CRAN-policy violations all addressed, notably keeping all temporary and (package and personal) cache directories clean after examples and tests
+* This is a major overhaul of the inner workings of `Require`. It now downloads and builds `Archive` and `GitHub` packages prior to installation, then installs all packages (`CRAN`, `Archive`, `GitHub`, `MRAN` on Windows) with one `install.packages` call (Linux-alikes) or up to two `install.packages` calls (binary and source), allowing efficient parallel installs. This results in very fast installs for all combinations of packages.
+new `options("Require.offlineMode")` can be set to `FALSE` to stop `Require` and `pkgDep` from checking the internet. This will fail, unless the cached packages are available locally (i.e., it was run once with all packages installed previously). If they are, then they will be installed without needing the internet. This option will also be set automatically on the first attempt to get a file from the internet, which fails, triggering a test of the internet. If that fails, then the option will be set to `FALSE` until next call to `Require` or `pkgDep` when it will be reset. This is experimental still.
+* many more edge cases found and dealt with
+* experimental use of `(HEAD)` to keep a package "up to date" with the HEAD of a GitHub branch. The behaviour still uses version numbering, so will not update based on SHA, but if the HEAD is ahead of the locally installed package and the `(HEAD)` is specified, then it will update. Specifically, use this instead of a version number, e.g., `"PredictiveEcology/Require@development (HEAD)"`
+* `modifyList2` now follows `modifyList` by adding the `keep.null` argument.
+* `setdiffNamed` will compare 2 named lists or vectors and keep on those elements that are in the first list (or vector), keeping in mind the name as well as the element.
+* package messaging is not sorted alphabetically during installation
+* all `message` calls now `messageVerbose`, so verbosity can be fully controlled with the argument `verbose` or `options("Require.verbose")`. See `?RequireOptions`.
+* tests clean up more completely after themselves
+* if `options(Require.RPackageCache = FALSE)` (or environment variable `"R_REQUIRE_PKGCACHE"`), then no cache folder will be created; previously a nearly empty folder was created by default. See `?RequireOptions`
+* Remove option `Require.persistentPkgEnv` as it was deemed superfluous.
+* numerous enhancements for speed
+* new function `Install`, which is `Require(..., require = FALSE)`
+* `(HEAD)` has now been tested for CRAN repositories and works as expected.
+* Updated README to show new functionality
+* will attempt to use local cached packages from `crancache` if the user sets `options(Require.useCranCache = TRUE)`. This is experimental and is still being tested.
+* A new function, `clearRequirePackageCache`, for clearing the package cache.
+* The cache has been developed to be able to be shared across Operating Systems, if there is a shared file system.
+* GitHub packages require the SHA to be assessed; now this is Cached to disk as well as RAM, so that it persists even if there is an R restart. 
+* All non-package cache files (`available.packages`, `pkgDep`, `GitHubSHA`) will be refreshed (purged) every 1 hour.
+* Much improved messaging, including identifying `MRAN` package installs explicitly (instead of just "Archive")
+
+## bugfixes
+* `pkgDep` was using local `DESCRIPTION` file to establish package dependencies for a package, if it was available. When the local package is ahead of CRAN (a developer's case), then this is desirable. But, when the local installed version is behind CRAN (a common user's case), then this is not desirable. `pkgDep` now uses CRAN's version (using `available.packages`) as developers can handle this situation on their own.
+* several minor
+* bugfix for `defaultCacheDir`, which would default to `runneradmin` under some conditions and did not allow installing packages due to permissions.
+
+## deprecated
+* `setup` and `setupOff` are now deprecated; messaging is supplied for what to do if these were being used
+* several options are deprecated
+
+
+version 0.1.6
+=============
+
+## enhancements
+* `pkgSnapshot` examples brought up to present usage & simplified
+* `pkgSnapshot` now uses a default filename that is an option `Require.packageVersionFile`.
+* `Require` can now accept `packageVersionFile = TRUE`, meaning use the package version file that is set in the `Require.packageVersionFile` option.
+
+## bugfix
+* minor bugfix only detected on submission to CRAN
+
+
+version 0.1.5
+=============
+
+## enhancements
+* package caching for packages that need sources installs (i.e., identified with `sourcePkgs()`, which tend to occur when R packages require idiosyncratic system dependencies) cache the binary version and reuse that on the same system with subsequent re-installs.
+
+## bugfix
+* `pkgDep` was misidentifying the correct package dependencies. This would manifest when a user had a version of package "A" installed as well as all its dependencies, e.g., "B". When the user updated "A" to a new version that required a new version of "B", it would not correctly identify the new dependency requirement, and not update "B", causing "A" update to fail. This is fixed.
+
 version 0.1.4
-==============
+=============
+
 * Make corrections for 2 failing architectures on CRAN
 * MUCH less verbose during automated testing
 

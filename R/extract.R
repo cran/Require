@@ -9,37 +9,58 @@
 #' @rdname extractPkgName
 #' @examples
 #' extractPkgName("Require (>=0.0.1)")
-extractPkgName <- function(pkgs) {
-  hasNamesAny <- !is.null(names(pkgs))
-  if (hasNamesAny) {
-    browser(expr = exists("aaaaa"))
-    hasNames <- nchar(names(pkgs)) > 0
-    pkgs[hasNames] <- names(pkgs)[hasNames]
-    pkgs <- unname(pkgs)
-  }
+extractPkgName <- function(pkgs, filenames) {
+  if (!missing(pkgs)) {
+    hasNamesAny <- !is.null(names(pkgs))
+    if (hasNamesAny) {
+      browser(expr = exists("aaaaa"))
+      hasNames <- nchar(names(pkgs)) > 0
+      pkgs[hasNames] <- names(pkgs)[hasNames]
+      pkgs <- unname(pkgs)
+    }
 
-  pkgNames <- trimVersionNumber(pkgs)
-  gitPkgs <- extractPkgGitHub(pkgNames)
-  whGitPkgs <- is.na(gitPkgs)
+    pkgNames <- trimVersionNumber(pkgs)
+    gitPkgs <- extractPkgGitHub(pkgNames)
+    whGitPkgs <- is.na(gitPkgs)
 
-  if (any(!whGitPkgs)) {
-    pkgNames[!whGitPkgs] <- gitPkgs[!whGitPkgs]
+    if (any(!whGitPkgs)) {
+      pkgNames[!whGitPkgs] <- gitPkgs[!whGitPkgs]
+    }
+  } else {
+    if (!missing(filenames)) {
+      fnsSplit <- strsplit(filenames, "_")
+      out <- unlist(lapply(fnsSplit, function(x) x[[1]]))
+      out2 <- strsplit(out, split = "-")
+      pkgNames <- unlist(Map(len = pmax(1, lengths(out2) - 1), pkg = out2, function(len, pkg) pkg[len]))
+    } else {
+      pkgNames <- character()
+    }
   }
 
   pkgNames
 }
 
 #' @rdname extractPkgName
+#' @param filenames Can be supplied instead of `pkgs` if it is a filename e.g., a
+#'   .tar.gz or .zip that was downloaded from CRAN.
 #' @export
 #' @examples
-#' extractVersionNumber(c("Require (<=0.0.1)", "PredictiveEcology/Require@development (<=0.0.4)"))
-extractVersionNumber <- function(pkgs) {
+#' extractVersionNumber(c(
+#'   "Require (<=0.0.1)",
+#'   "PredictiveEcology/Require@development (<=0.0.4)"
+#' ))
+extractVersionNumber <- function(pkgs, filenames) {
   if (!missing(pkgs)) {
     hasVersionNum <- grepl(grepExtractPkgs, pkgs, perl = FALSE)
     out <- rep(NA, length(pkgs))
     out[hasVersionNum] <- gsub(grepExtractPkgs, "\\2", pkgs[hasVersionNum], perl = FALSE)
   } else {
-    out <- character()
+    if (!missing(filenames)) {
+      fnsSplit <- strsplit(filenames, "_")
+      out <- unlist(lapply(fnsSplit, function(x) gsub("\\.zip|\\.tar\\.gz|\\.tgz", "", x[[2]])))
+    } else {
+      out <- character()
+    }
   }
   out
 }
@@ -65,13 +86,14 @@ extractPkgGitHub <- function(pkgs) {
     a <- strsplit(a, split = "/|@")
     a <- Map(x = a, hasRep = hasRepo, function(x, hasRep) x[1 + hasRep])
     pkgs[isGH] <- unlist(a)
-    if (any(!isGH))
+    if (any(!isGH)) {
       pkgs[!isGH] <- NA
+    }
   } else {
     pkgs <- rep(NA, length(pkgs))
   }
   pkgs
-  #unlist(lapply(strsplit(trimVersionNumber(pkgs), split = "/|@"), function(x) x[2]))
+  # unlist(lapply(strsplit(trimVersionNumber(pkgs), split = "/|@"), function(x) x[2]))
 }
 
 #' Trim version number off a compound package name
@@ -91,7 +113,7 @@ trimVersionNumber <- function(pkgs) {
     if (any(!nas)) {
       ew <- endsWith(pkgs[!nas], ")")
       if (any(ew)) {
-        pkgs[!nas][ew] <- gsub(paste0("\n|\t|",.grepVersionNumber), "", pkgs[!nas][ew])
+        pkgs[!nas][ew] <- gsub(paste0("\n|\t|", .grepVersionNumber), "", pkgs[!nas][ew])
       }
     }
     pkgs
@@ -104,5 +126,7 @@ rmExtraSpaces <- function(string) {
 .grepVersionNumber <- " *\\(.*"
 
 grepExtractPkgs <- ".*\\([ \n\t]*(<*>*=*)[ \n\t]*(.*)\\)"
+grepExtractPkgsFilename <-
+  "^[[:alpha:]].*_([0-9]+[.\\-][0-9]+[.\\-][0-9]+[.\\-]*[0-9]*)(_.*)(\\.zip|\\.tar.gz)"
 
 .grepR <- "^ *R( |\\(|$)"

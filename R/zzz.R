@@ -10,25 +10,32 @@ utils::globalVariables(c(
   toset <- !(names(opts.Require) %in% names(opts))
   if (any(toset)) options(opts.Require[toset])
 
-  if (getOption("Require.persistentPkgEnv")) {
-    if (file.exists(.thePersistentFile())) {
-      pkgEnvLast <- readRDS(.thePersistentFile())
-      list2env(pkgEnvLast, .pkgEnv)
-    }
-  }
-  if (!is.null(getOptionRPackageCache()))
-    dir.create(getOptionRPackageCache(), showWarnings = FALSE, recursive = TRUE)
+  # if (getOption("Require.persistentPkgEnv")) {
+  #   if (file.exists(.thePersistentFile())) {
+  #     pkgEnvLast <- readRDS(.thePersistentFile())
+  #     list2env(pkgEnvLast, .pkgEnv)
+  #   }
+  # }
+  possCacheDir <- getOptionRPackageCache()
+  # if (!is.null(possCacheDir)) {
+  #   dir.create(possCacheDir, showWarnings = FALSE, recursive = TRUE)
+  # }
 
   invisible()
 }
 
 .onAttach <- function(libname, pkgname) {
   if (isInteractive()) {
+    possCacheDir <- getOptionRPackageCache()
     mess <- c(
-      "Require version: ", as.character(utils::packageVersion("Require")), ".\n",
-      if (!is.null(getOptionRPackageCache()))
-        paste0("  Using cache directory: ", getOptionRPackageCache(), ".\n"),
-      "  See ?RequireOptions for additional settings."
+      "Require version: ", as.character(utils::packageVersion("Require")), "\n",
+      if (!is.null(possCacheDir)) {
+        paste0(
+          "  Using cache directory: ", possCacheDir,
+          "; clear with clearRequirePackageCache().\n"
+        )
+      },
+      "  See ?RequireOptions for this and other settings."
     )
 
     packageStartupMessage(mess)
@@ -36,12 +43,9 @@ utils::globalVariables(c(
 }
 
 .onUnload <- function(libpath) {
-  if (getOption("Require.persistentPkgEnv")) {
-    pkgEnvLast <- as.list(.pkgEnv);
-    saveRDS(pkgEnvLast, file = .thePersistentFile())
-  }
+
 }
 
-.thePersistentFile <- function() {
-  file.path(RequireCacheDir(), "pkgEnv.Rdata")
-}
+# .thePersistentFile <- function() {
+#   file.path(RequireCacheDir(FALSE), "pkgEnv.Rdata")
+# }

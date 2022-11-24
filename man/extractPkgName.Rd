@@ -7,9 +7,9 @@
 \alias{extractPkgGitHub}
 \title{Extract info from package character strings}
 \usage{
-extractPkgName(pkgs)
+extractPkgName(pkgs, filenames)
 
-extractVersionNumber(pkgs)
+extractVersionNumber(pkgs, filenames)
 
 extractInequality(pkgs)
 
@@ -17,6 +17,9 @@ extractPkgGitHub(pkgs)
 }
 \arguments{
 \item{pkgs}{A character string vector of packages with or without GitHub path or versions}
+
+\item{filenames}{Can be supplied instead of \code{pkgs} if it is a filename e.g., a
+.tar.gz or .zip that was downloaded from CRAN.}
 }
 \value{
 Just the package names without extraneous info.
@@ -26,7 +29,10 @@ Cleans a character vector of non-package name related information (e.g., version
 }
 \examples{
 extractPkgName("Require (>=0.0.1)")
-extractVersionNumber(c("Require (<=0.0.1)", "PredictiveEcology/Require@development (<=0.0.4)"))
+extractVersionNumber(c(
+  "Require (<=0.0.1)",
+  "PredictiveEcology/Require@development (<=0.0.4)"
+))
 extractInequality("Require (<=0.0.1)")
 extractPkgGitHub("PredictiveEcology/Require")
 }
