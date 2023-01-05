@@ -12,7 +12,7 @@ Require(
   packageVersionFile,
   libPaths,
   install_githubArgs = list(),
-  install.packagesArgs = list(),
+  install.packagesArgs = list(INSTALL_opts = "--no-multiarch"),
   standAlone = getOption("Require.standAlone", FALSE),
   install = getOption("Require.install", TRUE),
   require = getOption("Require.require", TRUE),
@@ -29,8 +29,9 @@ Install(
   packageVersionFile,
   libPaths,
   install_githubArgs = list(),
-  install.packagesArgs = list(),
+  install.packagesArgs = list(INSTALL_opts = "--no-multiarch"),
   standAlone = getOption("Require.standAlone", FALSE),
+  install = TRUE,
   repos = getOption("repos"),
   purge = getOption("Require.purge", FALSE),
   verbose = getOption("Require.verbose", FALSE),
@@ -66,7 +67,9 @@ to create isolated, stand alone package installations, if used with
 if conflicting.}
 
 \item{install.packagesArgs}{List of optional named arguments, passed to
-\code{install.packages}.}
+\code{install.packages}. Default is only \code{--no-multi-arch}, meaning that only
+the current architecture will be built and installed (e.g., 64 bit, not 32 bit,
+in many cases).}
 
 \item{standAlone}{Logical. If \code{TRUE}, all packages will be installed to and
 loaded from the \code{libPaths} only. NOTE: If \code{TRUE}, THIS WILL CHANGE THE
@@ -207,7 +210,7 @@ if (Require:::.runLongExamples()) {
   tempPkgFolder <- file.path(tempdir(), "Packages")
   # use standAlone, means it will put it in libPaths, even if it already exists
   #   in another local library (e.g., personal library)
-  Require("crayon", libPaths = tempPkgFolder, standAlone = TRUE)
+  Install("crayon", libPaths = tempPkgFolder, standAlone = TRUE)
 
   # make a package version snapshot of installed packages
   tf <- tempfile()
@@ -220,11 +223,11 @@ if (Require:::.runLongExamples()) {
 
   # Mutual dependencies, only installs once -- e.g., curl
   tempPkgFolder <- file.path(tempdir(), "Packages")
-  Require(c("remotes", "testit"), libPaths = tempPkgFolder, standAlone = TRUE)
+  Install(c("remotes", "testit"), libPaths = tempPkgFolder, standAlone = TRUE)
 
   # Mutual dependencies, only installs once -- e.g., curl
   tempPkgFolder <- file.path(tempdir(), "Packages")
-  Require(c("covr", "httr"), libPaths = tempPkgFolder, standAlone = TRUE)
+  Install(c("covr", "httr"), libPaths = tempPkgFolder, standAlone = TRUE)
 
   #####################################################################################
   # Isolated projects -- Use a project folder and pass to libPaths or set .libPaths() #
@@ -235,7 +238,7 @@ if (Require:::.runLongExamples()) {
     libPaths = ProjectPackageFolder, standAlone = FALSE
   )
 
-  Require("PredictiveEcology/fpCompare@development",
+  Install("PredictiveEcology/fpCompare@development",
     libPaths = ProjectPackageFolder,
     standAlone = TRUE
   ) # the latest version on GitHub
