@@ -14,8 +14,8 @@ Description: A single key function, 'Require' that makes rerun-tolerant
     the user or developer.
 URL: https://Require.predictiveecology.org,
         https://github.com/PredictiveEcology/Require
-Date: 2023-01-04
-Version: 0.2.6
+Date: 2023-03-14
+Version: 0.3.0
 Authors@R: c(
     person(given = "Eliot J B",
            family = "McIntire",
@@ -33,7 +33,7 @@ Authors@R: c(
     )
 Depends: R (>= 4.0)
 Imports: data.table (>= 1.10.4), methods, tools, utils
-Suggests: covr, remotes, parallel, testit
+Suggests: covr, parallel, remotes, testit
 Encoding: UTF-8
 Language: en-CA
 License: GPL-3
@@ -41,11 +41,11 @@ BugReports: https://github.com/PredictiveEcology/Require/issues
 ByteCompile: yes
 RoxygenNote: 7.2.3
 NeedsCompilation: no
-Packaged: 2023-01-05 00:35:47 UTC; emcintir
+Packaged: 2023-03-14 23:58:18 UTC; emcintir
 Author: Eliot J B McIntire [aut, cre] (<https://orcid.org/0000-0002-6914-8316>),
   Alex M Chubaty [ctb] (<https://orcid.org/0000-0001-7146-8135>),
   Her Majesty the Queen in Right of Canada, as represented by the
     Minister of Natural Resources Canada [cph]
 Maintainer: Eliot J B McIntire <eliot.mcintire@canada.ca>
 Repository: CRAN
-Date/Publication: 2023-01-05 21:30:05 UTC
+Date/Publication: 2023-03-15 00:20:06 UTC
