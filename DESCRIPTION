@@ -14,8 +14,8 @@ Description: A single key function, 'Require' that makes rerun-tolerant
     the user or developer.
 URL: https://Require.predictiveecology.org,
         https://github.com/PredictiveEcology/Require
-Date: 2023-05-22
-Version: 0.3.1
+Date: 2024-07-26
+Version: 1.0.0
 Authors@R: c(
     person(given = "Eliot J B",
            family = "McIntire",
@@ -32,20 +32,28 @@ Authors@R: c(
            role = "cph")
     )
 Depends: R (>= 4.0)
-Imports: data.table (>= 1.10.4), methods, tools, utils
-Suggests: covr, parallel, remotes, testit
+Imports: data.table (>= 1.10.4), methods, sys, tools, utils
+Suggests: covr, curl, diffobj, fpCompare, gitcreds, httr, pak,
+        parallel, rematch2, rmarkdown, knitr, roxygen2, rprojroot,
+        testthat (>= 3.0.0), tibble, waldo, withr
 Encoding: UTF-8
 Language: en-CA
 License: GPL-3
+VignetteBuilder: knitr, rmarkdown
 BugReports: https://github.com/PredictiveEcology/Require/issues
 ByteCompile: yes
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.2
+Collate: 'CRAN.R' 'Require-helpers.R' 'Require-package.R' 'messages.R'
+        'Require2.R' 'RequireOptions.R' 'envs.R' 'extract.R'
+        'helpers.R' 'pak.R' 'pkgDep.R' 'pkgDep3.R' 'pkgSnapshot.R'
+        'setLibPaths.R' 'setup.R' 'zzz.R'
+Config/testthat/edition: 3
 NeedsCompilation: no
-Packaged: 2023-05-22 18:46:22 UTC; emcintir
+Packaged: 2024-07-27 01:07:42 UTC; emcintir
 Author: Eliot J B McIntire [aut, cre] (<https://orcid.org/0000-0002-6914-8316>),
   Alex M Chubaty [ctb] (<https://orcid.org/0000-0001-7146-8135>),
   Her Majesty the Queen in Right of Canada, as represented by the
     Minister of Natural Resources Canada [cph]
 Maintainer: Eliot J B McIntire <eliot.mcintire@canada.ca>
 Repository: CRAN
-Date/Publication: 2023-05-22 21:00:02 UTC
+Date/Publication: 2024-07-27 04:30:02 UTC
