@@ -81,8 +81,8 @@
 #        "PredictiveEcology/reproducible (>= 2.0.10)")))
 
 ## ----eval=FALSE---------------------------------------------------------------
-#  # In this example, it is `terra` that must be installed from source on Linux
-#  if (Require:::isLinux()) {
+#  # In this example, it is `terra` that generally needs to be installed from source on Linux
+#  if (Require:::isUbuntuOrDebian()) {
 #    Require::setLinuxBinaryRepo()
 #    pkgs <- c("terra", "PSPclean")
 #    pkgFullName <- "ianmseddy/PSPclean@development"
