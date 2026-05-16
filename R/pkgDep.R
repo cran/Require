@@ -10,30 +10,28 @@ utils::globalVariables(
 #' This is a wrapper around `tools::dependsOnPkgs`,
 #' but with the added option of `topoSort`, which
 #' will sort them such that the packages at the top will have
-#' the least number of dependencies that are in `pkgs`.
+#' the least number of dependencies that are in `packages`.
 #' This is essentially a topological sort, but it is done
 #' heuristically. This can be used to e.g., `detach` or
 #' `unloadNamespace` packages in order so that they each
 #' of their dependencies are detached or unloaded first.
-#' @param pkgs A vector of package names to evaluate their
-#'   reverse depends (i.e., the packages that *use* each
-#'   of these packages)
+#' @inheritParams Require
 #' @param deps An optional named list of (reverse) dependencies.
 #'   If not supplied, then `tools::dependsOnPkgs(..., recursive = TRUE)`
 #'   will be used
 #' @param topoSort Logical. If `TRUE`, the default, then
 #'   the returned list of packages will be in order with the
-#'   least number of dependencies listed in `pkgs` at
+#'   least number of dependencies listed in `packages` at
 #'   the top of the list.
 #' @param reverse Logical. If `TRUE`, then this will use `tools::pkgDependsOn`
-#'   to determine which packages depend on the `pkgs`
+#'   to determine which packages depend on the `packages`
 #' @param useAllInSearch Logical. If `TRUE`, then all non-core
-#' R packages in `search()` will be appended to `pkgs`
+#' R packages in `search()` will be appended to `packages`
 #' to allow those to also be identified
 #' @param returnFull Logical. Primarily useful when `reverse = TRUE`.
 #'   If `TRUE`, then then all installed packages will be searched.
 #'   If `FALSE`, the default, only packages that are currently in
-#'   the `search()` path and passed in `pkgs` will be included
+#'   the `search()` path and passed in `packages` will be included
 #'   in the possible reverse dependencies.
 #'
 #' @inheritParams Require
@@ -44,7 +42,7 @@ utils::globalVariables(
 #' are either full reverse depends.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' if (Require:::.runLongExamples()) {
 #'   opts <- Require:::.setupExample()
 #'
@@ -54,7 +52,7 @@ utils::globalVariables(
 #' }
 #' }
 #'
-pkgDepTopoSort <- function(pkgs,
+pkgDepTopoSort <- function(packages,
                            deps,
                            reverse = FALSE,
                            topoSort = TRUE,
@@ -68,179 +66,180 @@ pkgDepTopoSort <- function(pkgs,
                            verbose = getOption("Require.verbose"), ...) {
 
   libPaths <- dealWithMissingLibPaths(libPaths, ...)
+  packages <- parseMultiLinePackages(packages)
 
   if (isTRUE(useAllInSearch)) {
     if (missing(deps)) {
-        a <- search()
-        a <- setdiff(a, .defaultPackages)
-        a <- gsub("package:", "", a)
-        pkgs <- unique(c(pkgs, a))
-      } else {
-        messageVerbose(
-          "deps is provided; useAllInSearch will be set to FALSE",
-          verbose = verbose,
-          verboseLevel = 2
-        )
-      }
+      a <- search()
+      a <- setdiff(a, .defaultPackages)
+      a <- gsub("package:", "", a)
+      packages <- unique(c(packages, a))
+    } else {
+      messageVerbose(
+        "deps is provided; useAllInSearch will be set to FALSE",
+        verbose = verbose,
+        verboseLevel = 2
+      )
     }
+  }
 
-    names(pkgs) <- pkgs
-    if (missing(deps)) {
-      aa <- if (isTRUE(reverse)) {
-        ip <- .installed.pkgs(lib.loc = libPaths, which = which, collapse = TRUE) # need all installed packages
-        ip <- installed.packagesDeps(ip, libPaths = libPaths, which = which[1])
-        deps <- depsWithCommasToVector(ip$Package, ip$deps)
-         deps <- lapply(deps, extractPkgName)
-        # names(deps) <- ip[, "Package"]
-        # names(pkgs) <- pkgs
-        deps <- deps[order(names(deps))]
-        revDeps <-
-          lapply(pkgs, function(p) {
-            names(unlist(
-              lapply(deps, function(d) {
-                if (isTRUE(any(p %in% d))) {
-                  TRUE
-                } else {
-                  NULL
-                }
-              })
-            ))
-          })
-        if (recursive) {
-          revDeps <- lapply(revDeps, function(p) {
-            if (!is.null(p)) {
-              used <- p
-              repeat ({
-                r <-
-                  unique(unlist(lapply(p, function(p1) {
-                    names(unlist(
-                      lapply(deps, function(d) {
-                        if (isTRUE(any(
-                          p1 %in% d
-                        ))) {
-                          TRUE
-                        } else {
-                          NULL
-                        }
-                      })
-                    ))
-                  })))
+  names(packages) <- packages
+  if (missing(deps)) {
+    aa <- if (isTRUE(reverse)) {
+      ip <- .installed.pkgs(lib.loc = libPaths, which = which, collapse = TRUE) # need all installed packages
+      ip <- installed.packagesDeps(ip, libPaths = libPaths, which = which[1])
+      deps <- depsWithCommasToVector(ip$Package, ip$deps)
+      deps <- lapply(deps, extractPkgName)
+      # names(deps) <- ip[, "Package"]
+      # names(packages) <- packages
+      deps <- deps[order(names(deps))]
+      revDeps <-
+        lapply(packages, function(p) {
+          names(unlist(
+            lapply(deps, function(d) {
+              if (isTRUE(any(p %in% d))) {
+                TRUE
+              } else {
+                NULL
+              }
+            })
+          ))
+        })
+      if (recursive) {
+        revDeps <- lapply(revDeps, function(p) {
+          if (!is.null(p)) {
+            used <- p
+            repeat ({
+              r <-
+                unique(unlist(lapply(p, function(p1) {
+                  names(unlist(
+                    lapply(deps, function(d) {
+                      if (isTRUE(any(
+                        p1 %in% d
+                      ))) {
+                        TRUE
+                      } else {
+                        NULL
+                      }
+                    })
+                  ))
+                })))
 
-                r <- setdiff(r, used) # addresses circularity
+              r <- setdiff(r, used) # addresses circularity
 
-                used <- unique(c(r, used))
-                if (length(r) == 0) {
-                  break
-                }
+              used <- unique(c(r, used))
+              if (length(r) == 0) {
+                break
+              }
 
-                p <- r
-              })
-            } else {
-              used <- NULL
-            }
-            sort(used)
-          })
-        }
-      } else {
-        pkgDep(
-          pkgs,
-          recursive = TRUE,
-          purge = purge,
-          libPaths = libPaths,
-          which = which,
-          verbose = verbose,
-          includeSelf = FALSE
-        )
+              p <- r
+            })
+          } else {
+            used <- NULL
+          }
+          sort(used)
+        })
       }
     } else {
-      aa <- deps
+      pkgDep(
+        packages,
+        recursive = TRUE,
+        purge = purge,
+        libPaths = libPaths,
+        which = which,
+        verbose = verbose,
+        includeSelf = FALSE
+      )
     }
-    bb <- list()
+  } else {
+    aa <- deps
+  }
+  bb <- list()
 
-    aa <- checkCircular(aa)
-    cc <- lapply(aa, function(x) {
-      character()
-    })
+  aa <- checkCircular(aa)
+  cc <- lapply(aa, function(x) {
+    character()
+  })
+  dd <- lapply(cc, function(x) {
+    0
+  })
+
+
+  if (length(aa) > 1) {
+    lengths <- lengths(aa)
+    aa <- aa[order(lengths)]
+    cc <- cc[order(lengths)]
     dd <- lapply(cc, function(x) {
       0
     })
 
+    ddIndex <- 0
+    priorsBeingInstalled <- priorsAlreadyInstalled <- character()
 
-    if (length(aa) > 1) {
-      lengths <- lengths(aa)
-      aa <- aa[order(lengths)]
-      cc <- cc[order(lengths)]
-      dd <- lapply(cc, function(x) {
-        0
-      })
-
-      ddIndex <- 0
-      priorsBeingInstalled <- priorsAlreadyInstalled <- character()
-
-      if (isTRUE(topoSort)) {
-        notInOrder <- TRUE
-        isCorrectOrder <- logical(length(aa))
-        i <- 1
-        newOrd <- numeric(0)
-        for (i in seq_along(aa)) {
-          dif <- setdiff(seq_along(aa), newOrd)
-          pkgNameNames <- extractPkgName(names(aa))
-          for (j in dif) {
-            pkgName <- extractPkgName(aa[[j]])
-            overlapFull <- pkgName %in% pkgNameNames[-i]
-            overlap <- pkgName %in% pkgNameNames[dif]
-            overlapPkgs <- pkgName[overlapFull]
-            isCorrectOrder <- !any(overlap)
-            if (isCorrectOrder) {
-              cc[j] <- list(overlapPkgs)
-              priorsBeingInstalled <-
+    if (isTRUE(topoSort)) {
+      notInOrder <- TRUE
+      isCorrectOrder <- logical(length(aa))
+      i <- 1
+      newOrd <- numeric(0)
+      for (i in seq_along(aa)) {
+        dif <- setdiff(seq_along(aa), newOrd)
+        pkgNameNames <- extractPkgName(names(aa))
+        for (j in dif) {
+          pkgName <- extractPkgName(aa[[j]])
+          overlapFull <- pkgName %in% pkgNameNames[-i]
+          overlap <- pkgName %in% pkgNameNames[dif]
+          overlapPkgs <- pkgName[overlapFull]
+          isCorrectOrder <- !any(overlap)
+          if (isCorrectOrder) {
+            cc[j] <- list(overlapPkgs)
+            priorsBeingInstalled <-
+              vapply(dd, function(x) {
+                if (is.numeric(x)) {
+                  x == ddIndex
+                } else {
+                  FALSE
+                }
+              }, logical(1))
+            priorsBeingInstalled <-
+              extractPkgName(names(priorsBeingInstalled)[priorsBeingInstalled])
+            overlapPkgsAdditional <-
+              intersect(overlapPkgs, priorsBeingInstalled)
+            if (length(overlapPkgsAdditional)) {
+              ddIndex <- ddIndex + 1
+              priorsAlreadyInstalled <-
                 vapply(dd, function(x) {
                   if (is.numeric(x)) {
-                    x == ddIndex
+                    x < ddIndex
                   } else {
                     FALSE
                   }
                 }, logical(1))
-              priorsBeingInstalled <-
-                extractPkgName(names(priorsBeingInstalled)[priorsBeingInstalled])
-              overlapPkgsAdditional <-
-                intersect(overlapPkgs, priorsBeingInstalled)
-              if (length(overlapPkgsAdditional)) {
-                ddIndex <- ddIndex + 1
-                priorsAlreadyInstalled <-
-                  vapply(dd, function(x) {
-                    if (is.numeric(x)) {
-                      x < ddIndex
-                    } else {
-                      FALSE
-                    }
-                  }, logical(1))
-                priorsAlreadyInstalled <-
-                  extractPkgName(names(priorsAlreadyInstalled)[priorsAlreadyInstalled])
-              }
-              dd[j] <- list(ddIndex)
-
-              newOrd <- c(newOrd, j)
-              # i <- i + 1
-              break
+              priorsAlreadyInstalled <-
+                extractPkgName(names(priorsAlreadyInstalled)[priorsAlreadyInstalled])
             }
+            dd[j] <- list(ddIndex)
+
+            newOrd <- c(newOrd, j)
+            # i <- i + 1
+            break
           }
         }
-        aa <- aa[newOrd]
-        cc <- cc[newOrd]
-        dd <- dd[newOrd]
       }
+      aa <- aa[newOrd]
+      cc <- cc[newOrd]
+      dd <- dd[newOrd]
     }
-
-    out <- if (isTRUE(returnFull)) {
-      aa
-    } else {
-      cc
-    }
-    attr(out, "installSafeGroups") <- dd
-
-    return(out)
   }
+
+  out <- if (isTRUE(returnFull)) {
+    aa
+  } else {
+    cc
+  }
+  attr(out, "installSafeGroups") <- dd
+
+  return(out)
+}
 
 .defaultPackages <-
   c(
@@ -348,9 +347,10 @@ DESCRIPTIONFileDeps <-
       if (is.null(desc_path)) {
         needed <- NULL
       } else {
+
         lines <- if (length(desc_path) == 1) {
           # linesAll <- lapply(desc_path, read.dcf)
-          try(readLines(desc_path))
+          try(readLines(desc_path), silent = TRUE)
         } else {
           lines <- desc_path
         }
@@ -501,7 +501,7 @@ whichToDILES <- function(which) {
             else
               lapply(which, function(wh)
                 paste(DESCRIPTIONFileDeps(lines, which = wh, purge = purge), collapse = comma)
-            )
+              )
           })
           if (length(deps))
             deps <- invertList(deps)
@@ -556,10 +556,10 @@ whichToDILES <- function(which) {
       out <- cbind(out, "LibPath" = rep(lib.loc, lengths), stringsAsFactors = FALSE)
 
       dups <- duplicated(out[, "Package"]) # means installed in >1 .libPaths()
-      out <- out[!dups, ]
+      out <- out[!dups, , drop = FALSE]
     }
     colNames <- intersect(colNames, colnames(out))
-    out <- out[, colNames]
+    out <- out[, colNames, drop = FALSE]
     # ret <-
     #   cbind(
     #     "Package" = basename(unlist(out[, "Package"])),
@@ -640,7 +640,7 @@ DESCRIPTIONFileDepsV <-
 #' dependency elsewhere, so its removal has no effect.
 #' @inheritParams Require
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' if (Require:::.runLongExamples()) {
 #'   opts <- Require:::.setupExample()
 #'
@@ -821,9 +821,17 @@ defaultCacheAgeForPurge <- 3600
 
 #' Purge everything in the Require cache
 #'
-#' Require uses caches for local Package saving, local caches of `available.packages`,
-#' local caches of GitHub (e.g., `"DESCRIPTION"`) files, and some function calls
-#' that are cached. This function clears all of them.
+#' Clears Require's own bookkeeping caches: the `available.packages()`
+#' snapshot, the GitHub SHA database, the `DESCRIPTION` cache, and the
+#' pkgDep memoisation database. These live under [cacheDir()] and are
+#' distinct from the package binary tarball cache.
+#'
+#' With `packages = TRUE`, the package binary cache is also cleared by
+#' calling [cacheClearPackages()] -- which under `usePak = TRUE` (the
+#' default) delegates to `pak::cache_clean()`, and under the legacy path
+#' walks Require's bookkeeping dir directly.
+#'
+#' `purgeCache()` is a deprecated alias.
 #'
 #' @inheritParams Require
 #' @return Run for its side effect, namely, all cached objects are removed.
@@ -838,7 +846,11 @@ cachePurge <- function(packages = FALSE,
 
 #' @rdname cachePurge
 #' @export
-purgeCache <- cachePurge
+purgeCache <- function(packages = FALSE, repos = getOption("repos")) {
+  .Deprecated("cachePurge", package = "Require",
+              msg = "purgeCache() is deprecated; use cachePurge() instead.")
+  cachePurge(packages = packages, repos = repos)
+}
 
 dealWithCache <- function(purge = TRUE,
                           checkAge = TRUE,
@@ -863,7 +875,7 @@ dealWithCache <- function(purge = TRUE,
 
   if (purge) {
     unlink(availablePackagesCachedPath(repos, type = c("binary", "source")))
-    Sys.setenv("R_AVAILABLE_PACKAGES_CACHE_CONTROL_MAX_AGE"=0)
+    Sys.setenv("R_AVAILABLE_PACKAGES_CACHE_CONTROL_MAX_AGE" = 0)
     pkgEnvStartTimeCreate()
     unlink(dir(RequireGitHubCacheDir(), full.names = TRUE))
     # getSHAFromGItHubMemoise
@@ -1036,9 +1048,12 @@ pkgDepTopoSortMemoise <- function(...) {
 }
 
 pkgDepDBFilename <- function() {
-  if (!is.null(cacheGetOptionCachePkgDir())) {
-    file.path(cachePkgDir(), "pkgDepDB.rds")
-  } # returns NULL if no Cache used
+  ## Require's pkgDep cache file -- bookkeeping, kept next to the legacy
+  ## SHA DB so first-run-after-upgrade doesn't lose existing state.
+  d <- .requirePkgInfoDir()
+  if (!is.null(d) && nzchar(d))
+    file.path(d, "pkgDepDB.rds")
+  ## else NULL (matches the prior "no Cache used" branch)
 }
 
 isAre <- function(l, v) {
@@ -1099,18 +1114,37 @@ getAvailablePackagesIfNeeded <-
     ap
   }
 
-#' Clear Require Cache elements
+#' Clear cached package tarballs
+#'
+#' Removes downloaded package archives from the cache that [cachePkgDir()]
+#' returns. With `usePak = TRUE` (the default) this delegates to
+#' `pak::cache_clean()` (no `packages` arg) or
+#' `pak::cache_delete(package = ...)` (selective). With `usePak = FALSE`
+#' it walks Require's legacy bookkeeping dir and unlinks tarballs there.
+#'
+#' Require's own bookkeeping (SHA DB, mirrors.csv, available.packages
+#' snapshots) is preserved by this function; use [cachePurge()] to clear
+#' those as well.
+#'
+#' `clearRequirePackageCache()` is a deprecated alias.
+#'
+#' @section Migration note:
+#'
+#' The `Rversion` parameter is honoured only on the legacy path -- pak's
+#' cache is not partitioned by R version the way Require's cache was, so
+#' `pak::cache_clean()`/`pak::cache_delete()` operate on the whole cache
+#' regardless of `Rversion`. The function emits a verbose note when
+#' `Rversion != versionMajorMinor()` under `usePak = TRUE`.
 #'
 #' @param packages Either missing or a character vector of package names
-#'   (currently cannot specify version number) to remove from the local Require
-#'   Cache.
-#' @param ask Logical. If `TRUE`, then it will ask user to confirm
-#' @param Rversion An R version (major dot minor, e.g., "4.2"). Defaults to
-#'   current R version.
-#' @param clearCranCache Logical. If `TRUE`, then this will also clear the
-#'   local `crancache` cache, which is only relevant if
-#'   `options(Require.useCranCache = TRUE)`, i.e., if `Require` is using the
-#'   `crancache` cache also
+#'   (currently cannot specify version number) to remove from the cache.
+#' @param ask Logical. If `TRUE`, asks the user to confirm before deleting.
+#' @param Rversion An R version (major.minor, e.g., `"4.2"`). Defaults to
+#'   the current R version. **Ignored under `usePak = TRUE`** -- see
+#'   "Migration note".
+#' @param clearCranCache Logical. If `TRUE`, also clears the local
+#'   `crancache` cache, which is only relevant if
+#'   `options(Require.useCranCache = TRUE)`.
 #' @export
 #' @inheritParams Require
 #' @rdname clearRequire
@@ -1119,7 +1153,63 @@ cacheClearPackages <- function(packages,
                                      Rversion = versionMajorMinor(),
                                      clearCranCache = FALSE,
                                      verbose = getOption("Require.verbose")) {
-  out <- cachePkgDir(create = FALSE)
+  ## In pak mode the package tarballs live in pak's cache, not in
+  ## Require's bookkeeping dir. Delegate to pak's native API so the
+  ## right files actually get removed.
+  if (isTRUE(getOption("Require.usePak", TRUE)) &&
+      requireNamespace("pak", quietly = TRUE)) {
+    if (!identical(Rversion, versionMajorMinor())) {
+      messageVerbose(
+        "cacheClearPackages: `Rversion` arg ignored under usePak = TRUE -- ",
+        "pak's cache is not partitioned by R version the way Require's ",
+        "legacy cache was; pak::cache_delete() / pak::cache_clean() ",
+        "operate on the full cache.",
+        verbose = verbose, verboseLevel = 1
+      )
+    }
+    proceed <- TRUE
+    if (isTRUE(ask)) {
+      message(if (missing(packages))
+                "Are you sure you would like to remove ALL packages from pak's cache?"
+              else
+                paste0("Are you sure you would like to remove\n",
+                       paste(packages, collapse = ", "),
+                       "\nfrom pak's cache?"))
+      askResult <- readline("(n or anything else for yes) ")
+      if (startsWith(tolower(askResult), "n")) proceed <- FALSE
+    }
+    if (isTRUE(proceed)) {
+      if (missing(packages)) {
+        messageVerbose("Clearing entire pak download cache via pak::cache_clean()",
+                       verbose = verbose, verboseLevel = 1)
+        tryCatch(pak::cache_clean(),
+                 error = function(e) {
+                   warning("pak::cache_clean() failed: ", conditionMessage(e),
+                           call. = FALSE)
+                 })
+      } else {
+        messageVerbose("Removing from pak download cache: ",
+                       paste(packages, collapse = ", "),
+                       verbose = verbose, verboseLevel = 1)
+        tryCatch(pak::cache_delete(package = packages),
+                 error = function(e) {
+                   warning("pak::cache_delete() failed: ", conditionMessage(e),
+                           call. = FALSE)
+                 })
+      }
+      ## Also drop Require's own SHA DB so HEAD-pin resolution
+      ## reflects the fresh state (mirrors the legacy branch's behavior).
+      SHAfile1 <- getSHAFromGitHubDBFilename()
+      if (length(SHAfile1) && nzchar(SHAfile1) && isTRUE(file.exists(SHAfile1)))
+        unlink(SHAfile1)
+    } else {
+      message("Aborting")
+    }
+    return(invisible(NULL))
+  }
+
+  ## Legacy non-pak path: walk Require's bookkeeping dir directly.
+  out <- .requirePkgInfoDir(create = FALSE)
   if (!identical(Rversion, versionMajorMinor())) {
     out <- file.path(dirname(out), Rversion)
   }
@@ -1131,8 +1221,7 @@ cacheClearPackages <- function(packages,
         "crancache is being used because options(Require.useCranCache = TRUE); ",
         "however, clearCranCache is FALSE. This means that packages from ",
         "crancache will continue to re-populate the Require Cache. ",
-        "To remove all local packages, set clearCranCache in this ",
-        "function to TRUE"
+        "To remove all local packages, set clearCranCache in this  function to TRUE."
       ))
     }
     if (isTRUE(clearCranCache)) {
@@ -1147,9 +1236,10 @@ cacheClearPackages <- function(packages,
     }
   }
   proceed <- TRUE
-  indivFiles <- dir(out, full.names = TRUE)
+  # Scan flat dir AND repos-specific subdirs, excluding metadata (.rds) files
+  indivFiles <- dir(out, full.names = TRUE, recursive = TRUE)
   isFile <- !dir.exists(indivFiles)
-  indivFiles <- indivFiles[isFile]
+  indivFiles <- indivFiles[isFile & !grepl("\\.rds$", indivFiles)]
   if (missing(packages)) {
     toDelete <-
       indivFiles # don't delete whole dir because has available.packages too; not to delete
@@ -1198,7 +1288,24 @@ cacheClearPackages <- function(packages,
 
 #' @export
 #' @rdname clearRequire
-clearRequirePackageCache <- cacheClearPackages
+clearRequirePackageCache <- function(packages,
+                                     ask = interactive(),
+                                     Rversion = versionMajorMinor(),
+                                     clearCranCache = FALSE,
+                                     verbose = getOption("Require.verbose")) {
+  .Deprecated("cacheClearPackages", package = "Require",
+              msg = paste0(
+                "clearRequirePackageCache() is deprecated; ",
+                "use cacheClearPackages() instead."
+              ))
+  if (missing(packages)) {
+    cacheClearPackages(ask = ask, Rversion = Rversion,
+                       clearCranCache = clearCranCache, verbose = verbose)
+  } else {
+    cacheClearPackages(packages = packages, ask = ask, Rversion = Rversion,
+                       clearCranCache = clearCranCache, verbose = verbose)
+  }
+}
 
 depsImpsSugsLinksToWhich <- function(depends, imports, suggests, linkingTo, which) {
   if (!missing(depends)) {
@@ -1244,8 +1351,8 @@ depsImpsSugsLinksToWhich <- function(depends, imports, suggests, linkingTo, whic
 installedVersionOKPrecise <- function(pkgDT, libPaths) {
   # pkgload steals system.file but fails under some conditions, not sure what...
   withCallingHandlers(
-    pkgDT[, localFiles := base::system.file("DESCRIPTION", package = Package), by = "Package"]
-    , warning = function(w) {
+    pkgDT[, localFiles := base::system.file("DESCRIPTION", package = Package), by = "Package"],
+    warning = function(w) {
       if (isTRUE(any(grepl("cannot open compressed file", w$message))))
         invokeRestart("muffleWarning")
     })
@@ -1345,7 +1452,7 @@ toPkgDepDT <- function(packageFullName, neededFromDESCRIPTION, pkg, verbose) {
 
 
 getAvailablePackagesCheckAdditRepos <- function(pkgDepDTList2, pkgDepDT, repos, verbose, type, ap = NULL) {
-#
+  #
   anyNewAdditionalRepositories <-
     unlist(lapply(pkgDepDTList2, function(dt)
       if (is.null(dt$Additional_repositories)) NULL else unique(dt$Additional_repositories)))
@@ -1496,7 +1603,7 @@ getVersionOptionPkgEnv <- function(psnNoVersion, verNum, inequ) {
 #' @rdname pkgDep
 #' @export
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' if (Require:::.runLongExamples()) {
 #'   opts <- Require:::.setupExample()
 #'
@@ -1537,4 +1644,3 @@ purgeAvailablePackages <- function(repos, purge = FALSE) {
   }
   purge
 }
-

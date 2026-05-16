@@ -19,7 +19,16 @@ comma <- ", "
 
 .txtMissingValueWhereTFNeeded <- "missing value where TRUE/FALSE needed"
 .txtUnableToAccessIndex <- "unable to access index"
+# Benign side effects of base R's available.packages() trying PACKAGES.rds first
+# and falling through to PACKAGES.gz. r-universe never serves PACKAGES.rds, so
+# these warnings fire on every successful r-universe fetch.
+.txtBenignAvailPkgsWarns <- paste(
+  "cannot open URL .*PACKAGES\\.rds.*404",
+  "downloaded length 0 != reported length [0-9]+",
+  sep = "|"
+)
 .txtGitHub <- "GitHub"
+.txtArchive <- "Archive"
 .txtCouldNotBeInstalled <- "could not be installed"
 .txtCldNotSlvPkgDeps <- "Could not solve package dependencies"
 .txtFailedToDLFrom <- "Failed to download.+from"
@@ -58,7 +67,7 @@ comma <- ", "
 
 .txtNoneAvailable <- "noneAvailable"
 
-
+.txtGitHubMissingToken <- "GitHub repository not accessible does it need authentication? "
 
 messageCantFind <- function(br, acct, repo)
   paste0("Can't find ", paste0(acct, "/", repo, "@", br), "; \n -- does it exist? --")
@@ -99,7 +108,6 @@ msgStdOut <- function(mess, logFile, verbose) {
   messOrig <- mess
   appendLF <- endsWith(mess, "\n") %in% FALSE
   if (verbose <= 1) {
-    # if (grepl("\\<sf\\>|\\<terra\\>|\\<RcppParallel\\>|\\<units\\>", messOrig)) browser()
     errs <- "Error in dyn.load|Execution halted|Aborted"
     if (!any(grepl(errs, mess))) {
 

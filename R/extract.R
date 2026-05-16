@@ -50,17 +50,28 @@ extractPkgName <- function(pkgs, filenames) {
 #' ))
 extractVersionNumber <- function(pkgs, filenames) {
   if (!missing(pkgs)) {
-    hasVersionNum <- grepl(grepExtractPkgs, pkgs, perl = FALSE)
-    out <- rep(NA, length(pkgs))
-    out[hasVersionNum] <- gsub(grepExtractPkgs, "\\2", pkgs[hasVersionNum], perl = FALSE)
+    ## Strip pak's source prefixes (any::, cran::, github::, url::) before
+    ## attempting version extraction; without this an "any::pkg@ver" ref
+    ## doesn't match either form.
+    pkgsBare <- sub("^[A-Za-z][A-Za-z0-9+.-]*::", "", pkgs)
+    hasVersionNum <- grepl(grepExtractPkgs, pkgsBare, perl = FALSE)
+    out <- rep(NA, length(pkgsBare))
+    out[hasVersionNum] <- gsub(grepExtractPkgs, "\\2", pkgsBare[hasVersionNum], perl = FALSE)
+    ## Also handle pak's "pkg@ver" form -- skip GitHub refs (owner/repo@sha)
+    ## by requiring no "/" in the part before "@".
+    if (isTRUE(getOption("Require.usePak", FALSE))) {
+      atForm <- is.na(out) & grepl("@", pkgsBare, fixed = TRUE) &
+        !grepl("/", sub("@.*$", "", pkgsBare), fixed = TRUE)
+      out[atForm] <- sub("^[^@]+@", "", pkgsBare[atForm])
+    }
   } else {
     if (!missing(filenames)) {
-      fnsSplit <- strsplit(filenames, "_")
+      fnsSplit <- strsplit(basename(filenames), "_")
       out <- unlist(lapply(fnsSplit, function(y) {
         if (length(y) >= 2)
-          a <- gsub("\\.zip|\\.tar\\.gz|\\.tgz", "", y[[2]])
+          gsub(paste0("\\.zip|\\.tar\\.gz|", macBinaryFileExtGrep), "", y[[2]])
         else
-          character()
+          NA_character_
         }))
     } else {
       out <- character()
@@ -115,11 +126,26 @@ trimVersionNumber <- function(pkgs) {
   if (!is.null(pkgs)) {
     nas <- is.na(pkgs)
     if (any(!nas)) {
+      ## Strip pak source prefixes first (any::, cran::, etc.) so the bare
+      ## name matches downstream string ops (installed.packages() rownames,
+      ## pkg_history lookups). Leave url:: alone -- those callers usually
+      ## want the URL preserved.
+      hasPrefix <- grepl("^[A-Za-z][A-Za-z0-9+.-]*::", pkgs[!nas]) &
+        !startsWith(pkgs[!nas], "url::")
+      pkgs[!nas][hasPrefix] <- sub("^[A-Za-z][A-Za-z0-9+.-]*::", "", pkgs[!nas][hasPrefix])
       ew <- endsWith(pkgs[!nas], ")")
-      if (getOption("Require.usePak", TRUE))
-        ew <- ew | grepl("@", pkgs[!nas])
       if (any(ew)) {
         pkgs[!nas][ew] <- gsub(paste0("\n|\t|", .grepVersionNumber), "", pkgs[!nas][ew])
+      }
+      ## pak "pkg@ver" form. Skip GitHub refs (owner/repo@sha) by requiring
+      ## no "/" before the "@". Only active when usePak so non-pak callers
+      ## keep their existing behavior.
+      if (isTRUE(getOption("Require.usePak", FALSE))) {
+        atForm <- grepl("@", pkgs[!nas], fixed = TRUE) &
+          !grepl("/", sub("@.*$", "", pkgs[!nas]), fixed = TRUE)
+        if (any(atForm)) {
+          pkgs[!nas][atForm] <- sub("@.+$", "", pkgs[!nas][atForm])
+        }
       }
     }
     pkgs

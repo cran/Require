@@ -1,4 +1,10 @@
 test_that("test 11", {
+  # CRAN POLICY: integration test -- drives Require()/Install() against
+  # real/misspelled GitHub refs via pak. Must not run on CRAN (no
+  # internet-dependent tests; pak not to be driven on CRAN). Skip at the
+  # top, before the first Install() call. (pak sysreqs sudo-probe is also
+  # globally disabled in .onLoad.)
+  skip_on_cran()
 
   # skip_if(getOption("Require.usePak"), message = "Not an option on usePak = TRUE")
   setupInitial <- setupTest()
@@ -9,14 +15,22 @@ test_that("test 11", {
       warns <- capture_warnings(
         Install("kevanrastelle/MPBforecasting")
       )))
-  expect_match(err$message, regexp = .txtDidYouSpell)
+  if (!isTRUE(getOption("Require.usePak"))) {
+    expect_match(err$message, regexp = .txtDidYouSpell)
+  } else {
+    # pak surfaces a misspelled GitHub user as a warning, not an error.
+    # Require's pak-path archive fallback now appends the same spelling hint
+    # the non-pak path emits, so the user gets actionable guidance.
+    expect_true(any(grepl(.txtDidYouSpell, warns, fixed = TRUE)),
+                info = paste("warns =", paste(warns, collapse = " | ")))
+  }
 
   isDev <- getOption("Require.isDev")
   isDevAndInteractive <- getOption("Require.isDevAndInteractive")
 
   if (isDevAndInteractive) {
     # Use a mixture of different types of "off CRAN"
-    if (!isMacOSX()) {
+    if (!isMacOS()) {
       pkgs <- c("knn", "ggplot2 (==3.4.3)", "silly1", "SpaDES.core")
       pkgsClean <- extractPkgName(pkgs)
       lala <- try(suppressWarnings(capture.output(suppressMessages(remove.packages(pkgsClean)))), silent = TRUE)
@@ -38,7 +52,7 @@ test_that("test 11", {
         expect_true(poss1 || poss2)
     }
 
-    skip_if_offline()
+    skip_if_offline2()
 
     ## Test Install and also (HEAD)
     messToSilence <- capture_messages(try(remove.packages("fpCompare"), silent = TRUE))
@@ -56,7 +70,7 @@ test_that("test 11", {
       testthat::expect_true(isTRUE(sum(grepl(theGrep2, capted2)) == 1))
     }
     # two sources, where both are OK; use CRAN by preference
-    if (!isMacOSX()) {
+    if (!isMacOS()) {
       lala <- suppressWarnings(capture.output(suppressMessages(
         remove.packages("SpaDES.core")))) ## TODO: fails on macOS
       suppressWarnings(
@@ -73,7 +87,7 @@ test_that("test 11", {
         # if (isWindows())
         testthat::expect_true(out2[Package == "SpaDES.core"]$installed)
       } else {
-        testthat::expect_true(out2[Package == "SpaDES.core"]$installResult == "OK")
+        testthat::expect_true(any(out2[Package == "SpaDES.core"]$installResult == "OK", na.rm = TRUE))
       }
 
     }

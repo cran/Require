@@ -1,17 +1,58 @@
 #' Path to (package) cache directory
 #'
-#' Sets (if `create = TRUE`) or gets the cache
-#' directory associated with the `Require` package.
-#' @return
-#' If `!is.null(cacheGetOptionCachePkgDir())`, i.e., a cache path exists,
-#' the cache directory will be created,
-#'   with a README placed in the folder. Otherwise, this function will just
-#'   return the path of what the cache directory would be.
+#' `cacheDir()` returns Require's own scratch directory (SHA database,
+#' available.packages snapshots, mirrors.csv, pkgDep cache); `cachePkgDir()`
+#' returns the package binary tarball cache.
 #'
-#' @details
-#' To set a different directory than the default, set the system variable:
-#' `R_USER_CACHE_DIR = "somePath"` and/or `R_REQUIRE_PKG_CACHE = "somePath"`
-#' e.g., in `.Renviron` file or `Sys.setenv()`. See Note below.
+#' @section What goes where:
+#'
+#' | Function          | What it holds                                                    | Default location                              | Knob                            |
+#' |-------------------|------------------------------------------------------------------|-----------------------------------------------|---------------------------------|
+#' | `cacheDir()`      | Require-internal bookkeeping (SHA DB, mirrors.csv, pkgDep cache) | `tools::R_user_dir("Require", "cache")`       | `R_REQUIRE_CACHE`               |
+#' | `cachePkgDir()`   | Package binary tarballs                                          | pak's `cache_summary()$cachepath` (pak mode)  | `R_USER_CACHE_DIR` (via pak)    |
+#' | `cachePkgDir()`   | Package binary tarballs                                          | `<cacheDir>/packages/<Rver>` (legacy)         | `R_REQUIRE_CACHE`               |
+#'
+#' Both defaults flow from `tools::R_user_dir()`, so setting
+#' `R_USER_CACHE_DIR=/some/path` in `.Renviron` redirects **both** caches
+#' to sibling subdirectories of `/some/path/R/` -- pak's cache lands in
+#' `pkgcache/pkg/`, Require's in `Require/`. That's the one-knob way to
+#' set up a shared cache across machines or R versions.
+#'
+#' @section How `cachePkgDir()` changes with `usePak`:
+#'
+#' \describe{
+#'   \item{`getOption("Require.usePak", TRUE)` (default)}{Thin wrapper over
+#'     `pak::cache_summary()$cachepath`. The directory is owned by pak/pkgcache;
+#'     location is controlled by `R_USER_CACHE_DIR` (read at pak's subprocess
+#'     spawn time). Default: `tools::R_user_dir("pkgcache", "cache")/pkg`.}
+#'   \item{`usePak = FALSE` (legacy)}{Returns `<cacheDir>/packages/<Rver>`,
+#'     controlled by `R_REQUIRE_CACHE`.}
+#' }
+#'
+#' Require-internal bookkeeping files always live next to the legacy path
+#' (`<cacheDir>/packages/<Rver>`) regardless of `usePak` -- pak doesn't know
+#' about them and would treat them as stray files.
+#'
+#' @section Deprecations:
+#'
+#' The following Require-specific knobs and helpers were folded into the
+#' pair above. Each is still functional for one release cycle and emits a
+#' deprecation warning when used.
+#'
+#' | Deprecated                          | Use instead                          |
+#' |-------------------------------------|--------------------------------------|
+#' | `cacheGetOptionCachePkgDir()`       | `cachePkgDir()`                      |
+#' | `rpackageFolder()` (internal)       | (inlined into `checkLibPaths()`)     |
+#' | `purgeCache()`                      | `cachePurge()`                       |
+#' | `clearRequirePackageCache()`        | `cacheClearPackages()`               |
+#' | `options("Require.cachePkgDir")`    | `R_USER_CACHE_DIR` env var           |
+#' | `Sys.getenv("R_REQUIRE_PKG_CACHE")` | `R_USER_CACHE_DIR` env var           |
+#'
+#' @return
+#'   A path string. When `create = TRUE`, the directory is created (with
+#'   a `README` placed in `cacheDir()`'s root if absent); otherwise the
+#'   function just returns what the path would be.
+#'
 #' @inheritParams checkPath
 #' @inheritParams Require
 #' @export
@@ -26,9 +67,8 @@ cacheDir <- function(create, verbose = getOption("Require.verbose")) {
   ## CURRENT: using cache dir following conventions used by tools::R_user_dir
   ##   tools::R_user_dir("appName", "cache")
 
-  # browser()
-  cacheDir <- if (nzchar(Sys.getenv("R_USER_CACHE_DIR"))) {
-    Sys.getenv("R_USER_CACHE_DIR")
+  cacheDir <- if (nzchar(Sys.getenv("R_REQUIRE_CACHE"))) {
+    Sys.getenv("R_REQUIRE_CACHE")
   } else {
     defaultCacheDirectory <- cacheDefaultDir()
     if (!is.null(defaultCacheDirOld)) { # solaris doesn't have this set
@@ -91,29 +131,86 @@ normPathMemoise <- function(d) {
 
 #' @export
 #' @rdname cacheDir
-#'
-#' @note
-#' Currently, there are 2 different Cache directories used by Require:
-#' `cacheDir` and `cachePkgDir`. The `cachePkgDir`
-#'  is intended to be a sub-directory of the `cacheDir`. If you set
-#'  `Sys.setenv("R_USER_CACHE_DIR" = "somedir")`, then both the package cache
-#'  and cache dirs will be set, with the package cache a sub-directory. You can, however,
-#'  set them independently, if you set `"R_USER_CACHE_DIR"` and `"R_REQUIRE_PKG_CACHE"`
-#'  environment variable. The package cache can also be set with
-#'  `options("Require.cachePkgDir" = "somedir")`.
 cachePkgDir <- function(create) {
   if (missing(create)) {
     create <- FALSE
   }
+
+  usePak <- isTRUE(getOption("Require.usePak", TRUE))
+  if (usePak && requireNamespace("pak", quietly = TRUE)) {
+    ## pak/pkgcache owns the directory: location resolved via R_USER_CACHE_DIR
+    ## (captured at the subprocess's spawn time). pak creates the dir itself
+    ## on first write, so `create = TRUE` is a no-op here.
+    pakPath <- tryCatch(pak::cache_summary()$cachepath,
+                        error = function(e) NULL)
+    if (!is.null(pakPath) && nzchar(pakPath))
+      return(normPathMemoise(pakPath))
+    ## Fall through to legacy path if pak's cache_summary failed (e.g. under
+    ## R CMD check where R_USER_CACHE_DIR is unset and pkgcache aborts).
+  }
+
   pkgCacheDir <- normPathMemoise(file.path(cacheDir(create), "packages", versionMajorMinor()))
   if (isTRUE(create)) {
     pkgCacheDir <- checkPath(pkgCacheDir, create = TRUE)
   }
-
-  ## TODO: prompt the user ONCE about using this cache dir, and save their choice
-  ##       - remind them how to change this, and make sure it's documented!
-
   return(pkgCacheDir)
+}
+
+## Internal: where Require's own bookkeeping files live (SHA DB,
+## DESCRIPTION cache, pkgDepDB, mirrors.csv, available.packages cache).
+## NOT the package tarball cache -- that's `cachePkgDir()`, which in pak
+## mode is pak's own cache directory. Historically these files lived next
+## to the tarballs at `<cacheDir>/packages/<Rver>`; this helper keeps them
+## there so existing on-disk state is preserved across the upgrade that
+## repurposed `cachePkgDir()` as a pak wrapper.
+.requirePkgInfoDir <- function(create = FALSE) {
+  d <- normPathMemoise(file.path(cacheDir(create), "packages", versionMajorMinor()))
+  if (isTRUE(create))
+    d <- checkPath(d, create = TRUE)
+  d
+}
+
+removeOldFlatCachePkgs <- function(verbose = getOption("Require.verbose")) {
+  pe <- pkgEnv()
+  if (!is.null(pe[["oldFlatCacheChecked"]])) return(invisible(NULL))
+  pe[["oldFlatCacheChecked"]] <- TRUE
+
+  ## Migration helper for #143's flat-cache layout: tarballs that used to
+  ## live directly in Require's `<cacheDir>/packages/<Rver>` before the
+  ## repos-specific-subdir rework. After `cachePkgDir()` was repurposed
+  ## as a pak wrapper, the flat dir is the bookkeeping dir, not pak's
+  ## cache.
+  flatDir <- .requirePkgInfoDir()
+  if (!dir.exists(flatDir)) return(invisible(NULL))
+
+  # Package files are directly in the flat dir (not in subdirs); subdirs belong to the new scheme
+  allEntries <- dir(flatDir, full.names = TRUE)
+  pkgPat <- "\\.tar\\.gz$|\\.zip$|\\.tgz$"
+  oldFiles <- allEntries[!dir.exists(allEntries) & grepl(pkgPat, allEntries)]
+
+  if (length(oldFiles)) {
+    messageVerbose(
+      "Removing ", length(oldFiles), " package file(s) from old flat cache location ",
+      "(", flatDir, "); they will be re-downloaded into repos-specific subdirectories.",
+      verbose = verbose, verboseLevel = 1
+    )
+    unlink(oldFiles)
+  }
+  invisible(NULL)
+}
+
+cachePkgDirForRepo <- function(repos, create = FALSE) {
+  # Normalize to just protocol+host so that "https://cloud.r-project.org/src/contrib"
+  # and "https://cloud.r-project.org" map to the same cache subdirectory.
+  # Lives under Require's bookkeeping dir (legacy non-pak download path);
+  # pak's own cache has its own per-repo layout we don't touch.
+  normalized <- sub("^(https?://[^/]+).*", "\\1", repos)
+  sanitized <- gsub("https|[:/]", "", normalized)
+  d <- file.path(.requirePkgInfoDir(), sanitized)
+  if (isTRUE(create)) {
+    d <- vapply(d, checkPath, character(1), create = TRUE)
+  }
+  d
 }
 
 RequireGitHubCacheDir <- function(create) {
@@ -130,17 +227,36 @@ RequireGitHubCacheDir <- function(create) {
 
   return(pkgCacheDir)
 }
-#' Get the option for `Require.cachePkgDir`
+#' Get the option for `Require.cachePkgDir` (deprecated)
 #'
-#' First checks if an environment variable `Require.cachePkgDir`
-#' is set and defines a path.
-#' If not set, checks whether the `options("Require.cachePkgDir")` is set.
-#' If a character string, then it returns that.
-#' If `TRUE`, then use `cachePkgDir()`. If `FALSE`
-#' then returns `NULL`.
+#' @description
+#' **Deprecated.** Use [cachePkgDir()] instead -- it is now the single
+#' getter for the package-tarball cache and wraps
+#' `pak::cache_summary()$cachepath` under `usePak = TRUE` (the default).
+#'
+#' This function is kept for one release cycle as a functional shim. It
+#' still resolves a user-supplied path from `options("Require.cachePkgDir")`
+#' or the `R_REQUIRE_PKG_CACHE` environment variable when set, but those
+#' two knobs are themselves deprecated and ignored under `usePak = TRUE`.
+#' To redirect pak's package cache to a shared location, set
+#' `R_USER_CACHE_DIR` in `.Renviron` (pak's standard env var). See
+#' [cacheDir()] for the full migration table.
+#'
+#' Resolution order (legacy path):
+#' 1. If `R_REQUIRE_PKG_CACHE` is set, return it.
+#' 2. Else if `options("Require.cachePkgDir")` is character, return it.
+#' 3. Else if the option is `TRUE`, return `cachePkgDir(FALSE)`.
+#' 4. Else if the option is `FALSE`, return `NULL`.
+#' 5. Otherwise, return `cachePkgDir(FALSE)`.
 #'
 #' @export
 cacheGetOptionCachePkgDir <- function() {
+  .Deprecated("cachePkgDir", package = "Require",
+              msg = paste0(
+                "cacheGetOptionCachePkgDir() is deprecated; use cachePkgDir() ",
+                "instead. To redirect pak's package cache, set R_USER_CACHE_DIR ",
+                "in your .Renviron (not R_REQUIRE_PKG_CACHE)."
+              ))
   curVal <- getOption("Require.cachePkgDir")
   try <- 1
   while (try < 3) {
@@ -224,14 +340,12 @@ setup <- function(newLibPaths,
 #' @rdname setup
 #' @inheritParams Require
 #' @export
-#' @param removePackages Deprecated. Please remove packages manually from
-#'        the .libPaths()
+#' @param removePackages Deprecated. Please remove packages manually from `.libPaths()`
 setupOff <- function(removePackages = FALSE, verbose = getOption("Require.verbose")) {
   updateRprofile <- checkTRUERprofile(TRUE)
   if (!file.exists(updateRprofile)) { # not in current dir
-    # 1. Check project
-    possDirs <- c(rprojroot::find_root(rprojroot::is_rstudio_project),
-                 "~")
+    ## 1. Check project
+    possDirs <- c(rprojroot::find_root(rprojroot::is_rstudio_project), "~")
     for (i in 1:2) {
       possDir <- possDirs[i]
       possFile <- file.path(possDir, updateRprofile)
@@ -307,7 +421,7 @@ setLinuxBinaryRepo <- function(binaryLinux = urlForArchivedPkgs,
         #        grep, x = gsub("https://", "", a$URL), value = TRUE)
         insertBefore <- which(lengths(isCRAN) > 0)
         repos <- c(repo, currentRepos)
-        if (insertBefore > 1) {
+        if (isTRUE(insertBefore > 1)) { # could have no CRAN official mirror
           repos <- c(currentRepos[seq(1, insertBefore - 1)] ,
                      repo,
                      currentRepos[seq(insertBefore, length(currentRepos))])
@@ -323,14 +437,36 @@ setLinuxBinaryRepo <- function(binaryLinux = urlForArchivedPkgs,
 }
 
 whIsOfficialCRANrepo <- function(currentRepos = getOption("repos"), backupCRAN = srcPackageURLOnCRAN) {
-  mirrorsLocalFile <- file.path(cachePkgDir(), ".mirrors.csv")
-  dir.create(dirname(mirrorsLocalFile), recursive = TRUE, showWarnings = FALSE)
-  if (!file.exists(mirrorsLocalFile))
-    download.file("https://cran.r-project.org/CRAN_mirrors.csv",
-                  destfile = mirrorsLocalFile, quiet = TRUE)
-  a <- read.csv(mirrorsLocalFile)
-  b <- a[1,]
-  b$URL = "https://cran.rstudio.com/"
+  ## mirrors.csv is Require-internal bookkeeping; lives next to other
+  ## Require state, not in pak's tarball cache.
+  mirrorsLocalFile <- file.path(.requirePkgInfoDir(create = TRUE), ".mirrors.csv")
+
+  for (attempt in 1:3) {
+    if (!file.exists(mirrorsLocalFile))
+      ## Suppress download.file warnings: on Windows + RStudio,
+      ## download.file is intercepted by .rs.downloadFile which emits a
+      ## warning() on SSL failure even with quiet = TRUE. The retry loop
+      ## (SSL workaround on attempt 2, curl method on attempt 3) already
+      ## handles failure gracefully, so the warning is pure noise.
+      suppressWarnings(try(
+        download.file("https://cran.r-project.org/CRAN_mirrors.csv",
+                      destfile = mirrorsLocalFile, quiet = TRUE),
+        silent = TRUE))
+    a <- try(read.csv(mirrorsLocalFile), silent = TRUE)
+    if (!is(a, "try-error"))
+      break
+    unlink(mirrorsLocalFile)
+    if (attempt == 2) {
+      # https://stackoverflow.com/a/76684292/3890027
+      enableSSLWorkaround()
+    }
+    if (attempt == 3) {
+      optsHere <- options(download.file.method = "curl")
+      on.exit(options(optsHere))
+    }
+  }
+  b <- a[1, ]
+  b$URL <- "https://cran.rstudio.com/"
   a <- rbind(a, b)
   isCRAN <- lapply(gsub("https://", "", currentRepos),
                    grep, x = gsub("https://", "", a$URL), value = TRUE)
@@ -349,8 +485,6 @@ debianUbuntuRelease <- function() {
   system("lsb_release -cs", intern = TRUE)
 }
 
-appName <- "R-Require"
-
 #' The default cache directory for Require Cache
 #'
 #' A wrapper around `tools::R_user_dir("Require", which = "cache")` that
@@ -363,6 +497,8 @@ appName <- "R-Require"
 cacheDefaultDir <- function() {
   normalizePath(tools::R_user_dir("Require", which = "cache"), mustWork = FALSE)
 }
+
+appName <- "R-Require"
 
 defaultCacheDirOld <- switch(SysInfo[["sysname"]],
   Darwin = normalizePath(file.path("~", "Library", "Caches", appName), mustWork = FALSE),

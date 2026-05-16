@@ -4,7 +4,13 @@ test_that("test 10", {
 
   isDev <- getOption("Require.isDev")
   isDevAndInteractive <- getOption("Require.isDevAndInteractive")
-  if (isDevAndInteractive && !isMacOSX()) { ## TODO: source installs failing on macOS
+  # Skip on CI: installs bcgov/climr + tidymodels + ccissr — heavy GitHub
+  # cascades that exceed CI budgets. Runs locally for devs via
+  # R_REQUIRE_RUN_ALL_TESTS=true. Same rationale applies to CRAN's check
+  # farm (install budget + risk of detritus from source compiles).
+  skip_on_cran()
+  skip_on_ci()
+  if (isDev) {
     # 4.3.0 doesn't have binaries, and historical versions of spatial packages won't compile
     pkgs <- c('reproducible',
               'SpaDES.core (>= 2.0.3)',
@@ -25,7 +31,6 @@ test_that("test 10", {
       on.exit(options(origRepos2))
     }
 
-    # warnsReq <- capture_warnings(Require::Install("Require"))
     Install(pkgs) |>
       capture_warnings() -> warns
 
@@ -33,7 +38,7 @@ test_that("test 10", {
       warns <- grep("installation of package.+cissr.+had non-zero exit status", invert = TRUE, warns)
     test <- testWarnsInUsePleaseChange(warns)
     expect_true(test)
-    skip_if_offline()
+    skip_if_offline2()
 
     ins <- installed.packages(noCache = TRUE) |> as.data.table()
     notInstalled <- setdiff(extractPkgName(pkgs), ins$Package)

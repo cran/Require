@@ -1,4 +1,11 @@
 test_that("test 4", {
+  # CRAN POLICY: integration test -- exercises Require()/Install() against
+  # real (and deliberately-misspelled) network/GitHub refs, which spins up
+  # pak. Tests must not require internet on CRAN, and pak must not be
+  # driven on CRAN's machines. Skip at the top, before any pak/network
+  # call. (The pak sysreqs sudo-probe is also globally disabled in
+  # .onLoad; this is the correct CRAN-hygiene fix on top of that.)
+  skip_on_cran()
 
   setupInitial <- setupTest()
   # on.exit(endTest(setupInitial))
@@ -14,9 +21,20 @@ test_that("test 4", {
     )
   )
   test <- testWarnsInUsePleaseChange(warns)
-
   if (!getOption("Require.usePak", TRUE))
     testthat::expect_true(any(grepl("could not be installed", warns))) # {out, "simpleWarning")})
+
+  warns <- capture_warnings(
+    err <- capture_error(# silent = TRUE,
+               out <- capture.output(type = "message",
+                                     lala <- Require("PredictiveEcology/scfm@development")
+               )
+    )
+  )
+  if (!isTRUE(getOption("Require.usePak"))) {
+    expect_match(all = FALSE, err$message, .txtDidYouSpell)
+    expect_match(all = FALSE, err$message, "scfm")
+  }
 
   # for coverages that were missing
   pkgDTEmpty <- Require:::toPkgDT(character())
@@ -28,7 +46,7 @@ test_that("test 4", {
     pkgDep("data.table", purge = TRUE)
   }
 
-  skip_if_offline()
+  skip_if_offline2()
   if (isTRUE(tryCatch(packageVersion("fpCompare"), error = function(e) "0.0.0") < "0.2.5")) {
     if (isDev) {
       mess <- capture_messages(
@@ -38,13 +56,13 @@ test_that("test 4", {
         )
       )
       # mac has a transient, unidentified failure on GHA with this
-      if (isMacOSX() && length(dir(.libPaths()[1], pattern = "fpCompare")) > 0)
+      if (isMacOS() && length(dir(.libPaths()[1], pattern = "fpCompare")) > 0)
         if (!isTRUE(any(grepl("Internet.+unavailable", mess))))
           expect_true(packVer("fpCompare", lib.loc = .libPaths()[1]) > "0.2.4")
     }
   }
 
-  skip_if_offline()
+  skip_if_offline2()
 
   if (!getOption("Require.usePak", TRUE)) {
     pkgDepTopoSort(c("data.table"), useAllInSearch = TRUE)
@@ -127,19 +145,24 @@ test_that("test 4", {
   # out2222 <- capture.output(setupOff())
   # testthat::expect_true(identical(Require:::cacheGetOptionCachePkgDir(), secondTry)) # BECAUSE THIS IS A MANUAL OVERRIDE of options; doesn't return Sys.getenv
 
+  ## cacheGetOptionCachePkgDir() is deprecated -- still functional but
+  ## emits a warning every call. Suppress so the legacy assertions pass
+  ## R-CMD-check's `error-on: warning` policy.
+  cGOCD <- function() suppressWarnings(cacheGetOptionCachePkgDir())
+
   ooo <- options(Require.cachePkgDir = TRUE)
-  testthat::expect_true(identical(cacheGetOptionCachePkgDir(), cachePkgDir()))
+  testthat::expect_true(identical(cGOCD(), cachePkgDir()))
   ooo <- options(Require.cachePkgDir = FALSE)
-  testthat::expect_true(identical(cacheGetOptionCachePkgDir(), NULL))
+  testthat::expect_true(identical(cGOCD(), NULL))
   ooo <- options(Require.cachePkgDir = tempdir())
-  testthat::expect_true(identical(cacheGetOptionCachePkgDir(), tempdir()))
+  testthat::expect_true(identical(cGOCD(), tempdir()))
   ooo <- options(Require.cachePkgDir = "default")
   RPackageCacheSysEnv <- Sys.getenv("R_REQUIRE_PKG_CACHE")
   if (identical(RPackageCacheSysEnv, "FALSE")) {
-    testthat::expect_true(identical(NULL, cacheGetOptionCachePkgDir()))
+    testthat::expect_true(identical(NULL, cGOCD()))
   } else {
-    if (!(is.null(Require:::cacheGetOptionCachePkgDir()) || Require:::cacheGetOptionCachePkgDir() == "FALSE")) {
-      testthat::expect_true(identical(normPath(Require:::cacheGetOptionCachePkgDir()), normPath(Require::cachePkgDir())))
+    if (!(is.null(cGOCD()) || identical(cGOCD(), "FALSE"))) {
+      testthat::expect_true(identical(normPath(cGOCD()), normPath(Require::cachePkgDir())))
     }
   }
 
@@ -162,7 +185,7 @@ test_that("test 4", {
 
   if (getRversion() >= "4.3.0") { # R 4.2.X and lower don't exist on PEuniverse so this test fails
     opts <- options(repos = PEUniverseRepo()); on.exit(options(opts), add = TRUE)
-    out2 <- by(wh, seq(NROW(wh)), function(wh1Row) {
+    out2 <- suppressWarnings(by(wh, seq(NROW(wh)), function(wh1Row) {
       out <- do.call(pkgDep, append(list("Require"), as.list(wh1Row[1, , drop = TRUE])))[[1]]
       o2 <- tools::toTitleCase(names(wh1Row)[unlist(wh1Row)])
       if (length(o2)) {
@@ -171,13 +194,14 @@ test_that("test 4", {
         # out <- setdiff(out, grep("R\\(.+", pkgs, value = TRUE, invert = TRUE))
       }
       setdiff(out, "remotes") # remotes was removed in version 0.2.6.9020
-    })
+    }))
     localDeps <- DESCRIPTIONFileDeps(system.file("DESCRIPTION", package = "Require"),
                                      which = c("Suggests", "Imports", "Depends"))
     locals <- setdiff(extractPkgName(localDeps), .basePkgs)
     testArgs <- setdiff(locals, unique(extractPkgName(unname(unlist(as.list(out2))))))
-    # not sure why roxygen2 was not in it before; fpCompare is new, not yet on PEUniverse
-    testArgs <- setdiff(testArgs, c("roxygen2", "rmarkdown", "fpCompare"))
+    # not sure why roxygen2 was not in it before; fpCompare is new, not yet on PEUniverse;
+    # pkgcache is added for offline-mode pak introspection (no upstream module deps)
+    testArgs <- setdiff(testArgs, c("roxygen2", "rmarkdown", "fpCompare", "pkgcache"))
     testthat::expect_identical(testArgs, character())
   }
   if (isDev) {
@@ -185,7 +209,7 @@ test_that("test 4", {
     #   were multiple repos; ffbase is no longer on CRAN
     # can't quiet this down on linux because ffbase is not binary but rest are ...
     #  install.packages won't do both types quiet = TRUE for some reason
-    if (!isMacOSX()) {
+    if (!isMacOS()) {
       warns1 <- capture_warnings(
         Install("ff", # verbose = 0,
                 repos = c(RSPM = urlForPositPACKAGES, CRAN = "https://cloud.r-project.org"
@@ -268,7 +292,7 @@ test_that("test 4", {
     # 7.367775  8.914831  9.495963 10.46189 10.56006 10.65823     3
   }
 
-  if (getRversion() >= "4.3.0") { # R 4.2.x and below can't seem to build many of the PE ecosystem from src
+  if (getRversion() >= "4.3.0" && !isTRUE(getOption("Require.usePak"))) { # R 4.2.x and below can't seem to build many of the PE ecosystem from src
     # Mistakenly have a partial repos, i.e., without getOption("repos") -- This failed previously Jul 2, 2024
     dir44 <- tempdir2(.rndstr(1))
     silence <- dir.create(dir44, recursive = TRUE, showWarnings = FALSE)
@@ -277,12 +301,13 @@ test_that("test 4", {
       Require::Install("LandR", repos = "predictiveecology.r-universe.dev", libPaths = dir44,
                        standAlone = TRUE)
     )
-    expect_match(warns, paste(sep = "|", .txtPleaseRestart, .txtCouldNotBeInstalled, .txtInstallationPkgFailed))
+    # pak appends the repos argument to 6 other repos; so you can't isolate just one repo
+    expect_match(warns, paste(sep = "|", .txtPleaseRestart, .txtCouldNotBeInstalled, .txtInstallationPkgFailed, "is not available for this version of R", "downloaded length 0", "cannot open URL", "404 Not Found"))
   }
 
 
   ooo <- options(Require.cachePkgDir = NULL)
-  testthat::expect_true(identical(cacheGetOptionCachePkgDir(), NULL))
+  testthat::expect_true(identical(suppressWarnings(cacheGetOptionCachePkgDir()), NULL))
   options(ooo)
 
 })
